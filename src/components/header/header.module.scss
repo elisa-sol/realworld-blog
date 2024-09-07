@@ -1,0 +1,25 @@
+.header {
+  //position: fixed;
+  display: flex;
+  padding: 20px 20px 15px;
+  font-size: 18px;
+  line-height: 28px;
+  background-color: #ffffff;
+  width: 100%;
+}
+
+.header-buttons {
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.sign-in {
+  margin-right: 30px;
+}
+
+.sign-up {
+  color: #52C41A;
+  border: 1px solid #52C41A;
+  border-radius: 5px;
+  padding: 10px;
+}
