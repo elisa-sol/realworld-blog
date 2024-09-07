@@ -1,6 +1,8 @@
 const initialState = {
   articles: [],
   article: null,
+  currentPage: 1,
+  totalPages: 1,
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -9,6 +11,7 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         articles: action.payload.articles,
+        totalPages: action.payload.totalPages,
       };
     case 'ARTICLE_EXPAND_SUCCESS':
       return {

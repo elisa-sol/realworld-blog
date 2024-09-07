@@ -3,14 +3,15 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchArticles } from '../../redux/actions';
 import ArticleItem from '../articleItem/articleItem.jsx';
+import { Pagination } from 'antd';
 
 function ArticlesList() {
   const dispatch = useDispatch();
-  const { articles } = useSelector((state) => state);
+  const { articles, totalPages, currentPage } = useSelector((state) => state);
 
   useEffect(() => {
-    dispatch(fetchArticles());
-  }, [dispatch]);
+    dispatch(fetchArticles(currentPage));
+  }, [dispatch, currentPage]);
 
   return (
     <div>
@@ -19,7 +20,12 @@ function ArticlesList() {
           <ArticleItem key={article.slug} article={article} />
         ))}
       </ul>
-      {/*<Pagination currentPage={currentPage} totalPages={totalPages} />*/}
+      <Pagination
+        current={currentPage}
+        totalPages={totalPages}
+        pageSize={10}
+        style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
+      />
     </div>
   );
 }
