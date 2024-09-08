@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchArticles } from '../../redux/actions';
 import ArticleItem from '../articleItem/articleItem.jsx';
 import { Pagination } from 'antd';
+import Loader from '../loader/loader';
 
 function ArticlesList() {
   const dispatch = useDispatch();
-  const { articles, totalPages, currentPage } = useSelector((state) => state);
+  const { articles, totalPages, currentPage, isLoading } = useSelector((state) => state);
+  // const isLoading = useSelector((state) => state.isLoading);
 
   useEffect(() => {
     dispatch(fetchArticles(currentPage));
@@ -17,8 +19,15 @@ function ArticlesList() {
     dispatch(fetchArticles(page));
   };
 
+  if (isLoading) return <Loader />;
+
   return (
     <div>
+      {/*{isLoading && (*/}
+      {/*  <div className={classes['loader-container']}>*/}
+      {/*    <Loader />*/}
+      {/*  </div>*/}
+      {/*)}*/}
       <ul>
         {articles.map((article) => (
           <ArticleItem key={article.slug} article={article} />

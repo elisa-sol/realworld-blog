@@ -3,6 +3,7 @@ const URL = 'https://blog.kata.academy/api/';
 export const fetchArticles =
   (page = 1, limit = 20) =>
   async (dispatch) => {
+    dispatch({ type: 'ARTICLES_REQUEST' });
     try {
       const offset = (page - 1) * limit;
       const response = await fetch(`${URL}articles?limit=${limit}&offset=${offset}`);
