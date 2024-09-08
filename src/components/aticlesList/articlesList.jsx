@@ -13,6 +13,10 @@ function ArticlesList() {
     dispatch(fetchArticles(currentPage));
   }, [dispatch, currentPage]);
 
+  const handlePageChange = (page) => {
+    dispatch(fetchArticles(page));
+  };
+
   return (
     <div>
       <ul>
@@ -21,10 +25,11 @@ function ArticlesList() {
         ))}
       </ul>
       <Pagination
+        onChange={handlePageChange}
         current={currentPage}
-        totalPages={totalPages}
-        pageSize={10}
-        style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
+        total={totalPages * 20}
+        pageSize={20}
+        style={{ display: 'flex', justifyContent: 'center', margin: '20px' }}
       />
     </div>
   );
