@@ -29,6 +29,7 @@ function ArticlesList() {
         current={currentPage}
         total={totalPages * 20}
         pageSize={20}
+        showSizeChanger={false}
         style={{ display: 'flex', justifyContent: 'center', margin: '20px' }}
       />
     </div>
