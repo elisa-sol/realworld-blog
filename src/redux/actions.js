@@ -11,7 +11,7 @@ export const fetchArticles =
         console.log('Ошибка загрузки статей1');
       }
       const json = await response.json();
-      console.log(json.articles.length);
+      console.log(json);
       dispatch({
         type: 'ARTICLES_LIST_SUCCESS',
         payload: {

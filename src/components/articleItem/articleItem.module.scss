@@ -83,3 +83,12 @@
   margin-right: 55px;
 }
 
+.tags {
+  width: fit-content;
+  //overflow-wrap: break-word;
+  padding: 2px 5px;
+  //margin-right: 5px;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+
