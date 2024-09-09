@@ -36,9 +36,13 @@ function ArticleItem({ article }) {
         </div>
       </div>
       <div className={classes.tags}>
-        {article.tagList.map((tag, index) => (
-          <span key={index}>{tag}</span>
-        ))}
+        {article.tagList
+          .filter((tag) => tag.trim() !== '')
+          .map((tag, index) => (
+            <div className={classes.tag} key={index}>
+              {tag.trim()}
+            </div>
+          ))}
       </div>
       <div className={classes.description}>{article.description}</div>
     </div>
