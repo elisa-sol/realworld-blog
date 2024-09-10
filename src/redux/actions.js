@@ -26,15 +26,17 @@ export const fetchArticles =
   };
 
 export const watchArticle = (slug) => async (dispatch) => {
-  // try {
-  const response = await fetch(`${URL}articles/${slug}`);
-  if (!response.ok) {
-    console.log('Ошибка разворота статьи');
+  try {
+    const response = await fetch(`${URL}articles/${slug}`);
+    if (!response.ok) {
+      console.log('Ошибка разворота статьи1');
+    }
+    const json = await response.json();
+    dispatch({
+      type: 'ARTICLE_EXPAND_SUCCESS',
+      payload: json.article,
+    });
+  } catch (error) {
+    console.log('Ошибка разворота статьи2');
   }
-  const json = await response.json();
-  dispatch({
-    type: 'ARTICLE_EXPAND_SUCCESS',
-    payload: json.article,
-  });
-  // }
 };

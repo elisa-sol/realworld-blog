@@ -7,13 +7,20 @@ import { HeartOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
 function ArticleItem({ article }) {
+  const truncate = (str, max = 5) => {
+    // if (!str) return '';
+    const array = str.trim().split(' ');
+    const ellipsis = array.length > max ? '...' : '';
+    return array.slice(0, max).join(' ') + ellipsis;
+  };
+
   return (
     <div className={classes['article-item']}>
       <div className={classes.container}>
         <div className={classes.left}>
           <div className={classes.title}>
             <Link className={classes.link} to={`/article/${article.slug}`}>
-              {article.title}
+              {truncate(article.title)}
             </Link>
           </div>
           <div className={classes['likes-container']}>
@@ -40,11 +47,11 @@ function ArticleItem({ article }) {
           .filter((tag) => tag.trim() !== '')
           .map((tag, index) => (
             <div className={classes.tag} key={index}>
-              {tag.trim()}
+              {truncate(tag.trim())}
             </div>
           ))}
       </div>
-      <div className={classes.description}>{article.description}</div>
+      <div className={classes.description}>{truncate(article.description)}</div>
     </div>
   );
 }

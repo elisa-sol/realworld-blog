@@ -1,9 +1,17 @@
 const initialState = {
   articles: [],
-  article: null,
   currentPage: 1,
   totalPages: 0,
   isLoading: false,
+  article: {
+    slug: '',
+    title: '',
+    favoritesCount: 0,
+    createdAt: '',
+    description: '',
+    tagList: [],
+    author: {},
+  },
 };
 
 const rootReducer = (state = initialState, action) => {
