@@ -29,11 +29,6 @@ const rootReducer = (state = initialState, action) => {
         currentPage: action.payload.currentPage,
         isLoading: false,
       };
-    case 'ARTICLES_REQUEST':
-      return {
-        ...state,
-        isLoading: true,
-      };
     case 'ARTICLE_EXPAND_SUCCESS':
       return {
         ...state,

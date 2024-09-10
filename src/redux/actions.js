@@ -26,6 +26,7 @@ export const fetchArticles =
   };
 
 export const watchArticle = (slug) => async (dispatch) => {
+  dispatch({ type: 'ARTICLES_REQUEST' });
   try {
     const response = await fetch(`${URL}articles/${slug}`);
     if (!response.ok) {
