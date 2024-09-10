@@ -49,16 +49,16 @@ function ArticleAlone() {
           />
         </div>
       </div>
-      <div className={classes.tags}>
+      <div className={classes['tags']}>
         {article.tagList
           .filter((tag) => tag.trim() !== '')
           .map((tag, index) => (
-            <div className={classes.tag} key={index}>
+            <div className={classes['tag-upgraded']} key={index}>
               {tag.trim()}
             </div>
           ))}
       </div>
-      <div className={classes.description}>{article.description}</div>
+      <div className={classes['description-upgraded']}>{article.description}</div>
       <Markdown className={classes.markdown} children={article.body} />
     </div>
   );
