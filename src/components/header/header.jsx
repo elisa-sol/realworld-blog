@@ -6,9 +6,13 @@ import { Link } from 'react-router-dom';
 function Header() {
   return (
     <div className={classes.header}>
-      <div className={classes['header-name']}>Realworld Blog</div>
+      <Link className={classes['header-name']} to={`/`} style={{ textDecoration: 'none', color: 'black' }}>
+        Realworld Blog
+      </Link>
       <div className={classes['header-buttons']}>
-        <span className={classes['sign-in']}>Sign In</span>
+        <Link className={classes['sign-in']} to={`/sign-in`} style={{ textDecoration: 'none' }}>
+          Sign In
+        </Link>
         <Link className={classes['sign-up']} to={`/sign-up`} style={{ textDecoration: 'none' }}>
           Sign Up
         </Link>

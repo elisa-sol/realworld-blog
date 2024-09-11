@@ -11,7 +11,13 @@ const initialState = {
     description: '',
     tagList: [],
     author: {},
+    body: '',
   },
+  username: '',
+  email: '',
+  password: '',
+  repeatPassword: '',
+  agreement: false,
 };
 
 const rootReducer = (state = initialState, action) => {
