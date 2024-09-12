@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
 
-import Markdown from 'react-markdown';
-import { useDispatch, useSelector } from 'react-redux';
-import { watchArticle } from '../../redux/actions';
-import classes from '../articleItem/articleItem.module.scss';
-import { Link, useParams } from 'react-router-dom';
-import Loader from '../loader/loader.jsx';
 import { HeartOutlined } from '@ant-design/icons';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
+import Markdown from 'react-markdown';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+
+import { watchArticle } from '../../redux/actions';
+import classes from '../articleItem/articleItem.module.scss';
+import Loader from '../loader/loader';
 
 function ArticleAlone() {
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ function ArticleAlone() {
           />
         </div>
       </div>
-      <div className={classes['tags']}>
+      <div className={classes.tags}>
         {article.tagList
           .filter((tag) => tag.trim() !== '')
           .map((tag, index) => (
