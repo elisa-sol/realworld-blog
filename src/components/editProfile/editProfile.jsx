@@ -1,7 +1,6 @@
 import React from 'react';
 
 import classes from './editProfile.module.scss';
-import isEmail from 'validator/lib/isEmail.js';
 
 function EditProfile() {
   return (
