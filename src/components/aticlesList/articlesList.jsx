@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 
+import { Pagination } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+
+import classes from './articlesList.module.scss';
 import { fetchArticles } from '../../redux/actions';
 import ArticleItem from '../articleItem/articleItem';
-import { Pagination } from 'antd';
 import Loader from '../loader/loader';
 
 function ArticlesList() {
@@ -21,7 +23,7 @@ function ArticlesList() {
   if (isLoading) return <Loader />;
 
   return (
-    <div>
+    <div className={classes.container}>
       <ul>
         {articles.map((article) => (
           <ArticleItem key={article.slug} article={article} />

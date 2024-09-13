@@ -87,13 +87,14 @@
 //
 // export default SignIn;
 
-// src/components/SignIn.js
 import React, { useContext, useState } from 'react';
+
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import isEmail from 'validator/lib/isEmail';
-import { UserContext } from '../../userContext/userContext';
+
 import classes from './signIn.module.scss';
+import { UserContext } from '../../userContext/userContext';
 
 function SignIn() {
   const {
@@ -104,20 +105,18 @@ function SignIn() {
     mode: 'onChange',
   });
 
-  const { loginUser } = useContext(UserContext); // Получаем функцию loginUser из контекста
+  const { loginUser } = useContext(UserContext);
   const navigate = useNavigate();
-  const [loginError, setLoginError] = useState(''); // Состояние для ошибок входа
+  const [loginError, setLoginError] = useState('');
 
   const onSubmit = (data) => {
-    // Извлекаем данные пользователя из localStorage
     const savedData = JSON.parse(localStorage.getItem('signUpData'));
 
-    // Проверяем, совпадают ли введенные данные с сохраненными
     if (savedData && savedData.email === data.email && savedData.password === data.password) {
-      loginUser(savedData); // Сохраняем пользователя в контекст
-      navigate('/'); // Перенаправляем на главную страницу
+      loginUser(savedData);
+      navigate('/');
     } else {
-      setLoginError('Invalid email or password'); // Устанавливаем сообщение об ошибке
+      setLoginError('Invalid email or password');
     }
   };
 

@@ -1,10 +1,11 @@
 import React from 'react';
 
-import classes from './articleItem.module.scss';
+import { HeartOutlined } from '@ant-design/icons';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { HeartOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+
+import classes from './articleItem.module.scss';
 
 function ArticleItem({ article }) {
   const truncate = (str, max = 5) => {

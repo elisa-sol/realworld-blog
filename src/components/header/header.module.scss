@@ -4,7 +4,12 @@
   font-size: 18px;
   line-height: 28px;
   background-color: #ffffff;
-  width: 100%;
+}
+
+.header-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .header-buttons {
@@ -57,4 +62,5 @@
   line-height: 28px;
   text-align: left;
   margin-left: 10px;
+  cursor: pointer;
 }

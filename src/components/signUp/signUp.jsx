@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import isEmail from 'validator/lib/isEmail';
+
 import classes from './signUp.module.scss';
 import { UserContext } from '../../userContext/userContext';
 
