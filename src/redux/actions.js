@@ -41,3 +41,12 @@ export const watchArticle = (slug) => async (dispatch) => {
     console.log('Ошибка разворота статьи2');
   }
 };
+
+export const updateFormField = (field, value) => ({
+  type: 'UPDATE_FORM_FIELD',
+  payload: { field, value },
+});
+
+export const submitForm = () => ({
+  type: 'SUBMIT_FORM',
+});

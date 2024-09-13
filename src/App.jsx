@@ -1,23 +1,27 @@
 import React from 'react';
 
-import classes from './app.module.scss';
-import Header from './components/header/header';
-import ArticlesList from './components/aticlesList/articlesList';
 import { Route, Routes } from 'react-router-dom';
+
+import classes from './app.module.scss';
 import ArticleAlone from './components/articleAlone/articleAlone';
-import SignUp from './components/signUp/signUp.jsx';
-import SignIn from './components/signIn/signIn.jsx';
+import ArticlesList from './components/aticlesList/articlesList';
+import Header from './components/header/header';
+import SignIn from './components/signIn/signIn';
+import SignUp from './components/signUp/signUp';
+import { UserProvider } from './userContext/userContext';
 
 function App() {
   return (
     <div>
-      <Header />
-      <Routes>
-        <Route path="/" element={<ArticlesList />} />
-        <Route path="/article/:slug" element={<ArticleAlone />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
-      </Routes>
+      <UserProvider>
+        <Header />
+        <Routes>
+          <Route path="/" element={<ArticlesList />} />
+          <Route path="/article/:slug" element={<ArticleAlone />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+        </Routes>
+      </UserProvider>
     </div>
   );
 }

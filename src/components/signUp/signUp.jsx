@@ -1,41 +1,129 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { Link } from 'react-router-dom';
-
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import isEmail from 'validator/lib/isEmail';
 import classes from './signUp.module.scss';
+import { UserContext } from '../../userContext/userContext';
 
 function SignUp() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    mode: 'onChange',
+  });
+
+  const { loginUser } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const onSubmit = (data) => {
+    localStorage.setItem('signUpData', JSON.stringify(data));
+    loginUser(data);
+    navigate('/');
+  };
+
+  const passwordValue = watch('password', '');
+
   return (
     <div className={classes['sign-up']}>
       <div className={classes.header}> Create new account </div>
-      <div className={classes.container}>
+
+      <form className={classes.container} onSubmit={handleSubmit(onSubmit)}>
         <div className={classes.name}>
-          {' '}
           Username
-          <input className={classes.username} id="username" type="text" name="username" placeholder="Username" />
+          <input
+            className={classes.username}
+            id="username"
+            type="text"
+            placeholder="Username"
+            {...register('username', {
+              required: 'Username is required',
+              minLength: {
+                value: 3,
+                message: 'Username must be at least 3 characters',
+              },
+              maxLength: {
+                value: 20,
+                message: 'Username must be less than 20 characters',
+              },
+            })}
+          />
+          {errors.username && <span className={classes.errors}>{errors.username.message}</span>}
         </div>
+
         <div className={classes.name}>
-          {' '}
           Email address
-          <input className={classes.email} id="email" type="text" name="email" placeholder="Email address" />
+          <input
+            className={classes.email}
+            id="email"
+            type="text"
+            placeholder="Email address"
+            {...register('email', {
+              required: 'Email address is required',
+              validate: (input) => isEmail(input) || 'Invalid email address',
+            })}
+          />
+          {errors.email && <span className={classes.errors}>{errors.email.message}</span>}
         </div>
+
         <div className={classes.name}>
-          {' '}
           Password
-          <input className={classes.password} id="password" type="text" name="password" placeholder="Password" />
+          <input
+            className={classes.password}
+            id="password"
+            type="password"
+            placeholder="Password"
+            {...register('password', {
+              required: 'Password is required',
+              minLength: {
+                value: 6,
+                message: 'Password must be at least 6 characters',
+              },
+              maxLength: {
+                value: 40,
+                message: 'Password must be less than 40 characters',
+              },
+            })}
+          />
+          {errors.password && <span className={classes.errors}>{errors.password.message}</span>}
         </div>
+
         <div className={classes.name}>
-          {' '}
           Repeat Password
-          <input className={classes.repeat} id="repeat" type="text" name="repeat" placeholder="Password" />
+          <input
+            className={classes.repeat}
+            id="repeatPassword"
+            type="password"
+            placeholder="Password"
+            {...register('repeatPassword', {
+              required: 'Password is required',
+              validate: (value) => value === passwordValue || 'Passwords do not match',
+            })}
+          />
+          {errors.repeatPassword && <span className={classes.errors}>{errors.repeatPassword.message}</span>}
         </div>
+
         <div className={classes.agreement}>
           <label htmlFor="checkbox" className={classes.label}>
-            <input className={classes.checkbox} id="checkbox" name="checkbox" type="checkbox" />I agree to the
-            processing of my personal information
+            <input
+              className={classes.checkbox}
+              id="checkbox"
+              type="checkbox"
+              {...register('agreement', {
+                required: 'Please accept the terms and conditions to continue',
+              })}
+            />
+            I agree to the processing of my personal information
           </label>
+          {errors.agreement && <span className={classes.errors}>{errors.agreement.message}</span>}
         </div>
-        <div className={classes.btn}> Create </div>
+
+        <button className={classes.btn} type="submit">
+          Create
+        </button>
         <div className={classes.question}>
           {' '}
           Already have an account?{' '}
@@ -43,129 +131,9 @@ function SignUp() {
             Sign In.{' '}
           </Link>{' '}
         </div>
-      </div>
+      </form>
     </div>
   );
 }
 
 export default SignUp;
-
-// import React, { useState } from 'react';
-// import { Link } from 'react-router-dom';
-// import classes from './signUp.module.scss';
-//
-// function SignUp() {
-//   const [formData, setFormData] = useState({
-//     username: '',
-//     email: '',
-//     password: '',
-//     repeatPassword: '',
-//     agreement: false,
-//   });
-//
-//   const [errors, setErrors] = useState({});
-//
-//   const handleChange = (e) => {
-//     const { name, value, type, checked } = e.target;
-//     setFormData({
-//       ...formData,
-//       [name]: type === 'checkbox' ? checked : value,
-//     });
-//   };
-//
-//   const validate = () => {
-//     const newErrors = {};
-//     if (!formData.username) newErrors.username = 'Username is required';
-//     if (!formData.email) newErrors.email = 'Email is required';
-//     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
-//     if (!formData.password) newErrors.password = 'Password is required';
-//     if (formData.password !== formData.repeatPassword) newErrors.repeatPassword = 'Passwords do not match';
-//     if (!formData.agreement) newErrors.agreement = 'You must agree to the terms';
-//
-//     setErrors(newErrors);
-//     return Object.keys(newErrors).length === 0;
-//   };
-//
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     if (!validate()) return;
-//
-//     // Отправка данных на сервер
-//     // Здесь можно выполнить запрос на сервер с formData
-//     console.log('Form data submitted:', formData);
-//   };
-//
-//   return (
-//     <form className={classes['sign-up']} onSubmit={handleSubmit}>
-//       <div className={classes.header}>Create new account</div>
-//       <div className={classes.container}>
-//         <div className={classes.name}>
-//           Username
-//           <input
-//             className={classes.username}
-//             type="text"
-//             name="username"
-//             placeholder="Username"
-//             value={formData.username}
-//             onChange={handleChange}
-//           />
-//           {errors.username && <div className={classes.error}>{errors.username}</div>}
-//         </div>
-//         <div className={classes.name}>
-//           Email address
-//           <input
-//             className={classes.email}
-//             type="text"
-//             name="email"
-//             placeholder="Email address"
-//             value={formData.email}
-//             onChange={handleChange}
-//           />
-//           {errors.email && <div className={classes.error}>{errors.email}</div>}
-//         </div>
-//         <div className={classes.name}>
-//           Password
-//           <input
-//             className={classes.password}
-//             type="password"
-//             name="password"
-//             placeholder="Password"
-//             value={formData.password}
-//             onChange={handleChange}
-//           />
-//           {errors.password && <div className={classes.error}>{errors.password}</div>}
-//         </div>
-//         <div className={classes.name}>
-//           Repeat Password
-//           <input
-//             className={classes.repeat}
-//             type="password"
-//             name="repeatPassword"
-//             placeholder="Repeat Password"
-//             value={formData.repeatPassword}
-//             onChange={handleChange}
-//           />
-//           {errors.repeatPassword && <div className={classes.error}>{errors.repeatPassword}</div>}
-//         </div>
-//         <div className={classes.agreement}>
-//           <label htmlFor="agreement" className={classes.label}>
-//             <input type="checkbox" name="agreement" checked={formData.agreement} onChange={handleChange} />I agree to
-//             the processing of my personal information
-//           </label>
-//           {errors.agreement && <div className={classes.error}>{errors.agreement}</div>}
-//         </div>
-//         <button type="submit" className={classes.btn}>
-//           Create
-//         </button>
-//         <div className={classes.question}>
-//           Already have an account?{' '}
-//           <Link className={classes.in} to="/sign-in">
-//             Sign In.
-//           </Link>
-//         </div>
-//       </div>
-//     </form>
-//   );
-// }
-//
-// export default SignUp;

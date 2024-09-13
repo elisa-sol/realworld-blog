@@ -7,8 +7,6 @@
   background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 0 5px 10px 5px rgba(0, 0, 0, 0.2);
-  //margin-top: 30px;
-  //margin-left: 40px;
 }
 
 .container {
@@ -20,7 +18,7 @@
   font-weight: 400;
   line-height: 28px;
   text-align: left;
-  color: #1890FF;
+  color: #1890ff;
   overflow-wrap: anywhere;
 }
 
@@ -41,8 +39,9 @@
 
 .right {
   display: grid;
-  grid-template-areas: 'username img'
-                        'date img';
+  grid-template-areas:
+    'username img'
+    'date img';
   margin-left: auto;
   gap: 10px;
   box-sizing: border-box;
@@ -54,7 +53,6 @@
   font-weight: 400;
   line-height: 28px;
   text-align: right;
-
 }
 
 .date {
@@ -129,13 +127,6 @@
   color: rgba(0, 0, 0, 0.5);
 }
 
-//.tags-upgraded {
-//  display: flex;
-//  gap: 8px;
-//  flex-wrap: wrap;
-//  overflow-wrap: anywhere;
-//}
-
 .tag-upgraded {
   align-items: center;
   width: fit-content;
@@ -144,8 +135,4 @@
   border-radius: 5px;
   margin-bottom: 10px;
   color: rgba(0, 0, 0, 0.5);
-
 }
-
-
-

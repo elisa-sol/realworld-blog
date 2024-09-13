@@ -45,7 +45,7 @@ function ArticleAlone() {
           <img
             className={classes.image}
             src={article.author.image}
-            alt="image"
+            alt="author"
             style={{ width: '46px', height: '46px' }}
           />
         </div>

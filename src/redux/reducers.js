@@ -20,6 +20,7 @@ const initialState = {
   agreement: false,
 };
 
+// eslint-disable-next-line default-param-last
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'ARTICLES_REQUEST':
@@ -40,6 +41,15 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         article: action.payload,
         isLoading: false,
+      };
+    case 'UPDATE_FORM_FIELD':
+      return {
+        ...state,
+        [action.payload.field]: action.payload.value,
+      };
+    case 'SUBMIT_FORM':
+      return {
+        ...state,
       };
     default:
       return state;
