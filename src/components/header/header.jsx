@@ -19,9 +19,9 @@ function Header() {
             <button className={classes['create-article']} type="button">
               Create article
             </button>
-            <span className={classes.username}>
+            <Link className={classes.username} to="/profile" style={{ textDecoration: 'none', color: 'black' }}>
               {user.username} {user.image}
-            </span>
+            </Link>
             <button className={classes.logout} type="button" onClick={logoutUser}>
               Log Out
             </button>
