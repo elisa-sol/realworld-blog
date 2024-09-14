@@ -42,6 +42,26 @@ export const watchArticle = (slug) => async (dispatch) => {
   }
 };
 
+// export const signUp = (userData) => async (dispatch) => {
+//   try {
+//     const response = await fetch(`${URL}users`, {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ user: userData }),
+//     });
+//
+//     if (!response.ok) {
+//       console.log('Ошибка регистрации1');
+//       return;
+//     }
+//
+//     const json = await response.json();
+//     dispatch({ type: 'USER_SIGNUP_SUCCESS', payload: json.user });
+//   } catch (error) {
+//     console.log('Ошибка регистрации2');
+//   }
+// };
+
 export const signUp = (userData) => async (dispatch) => {
   try {
     const response = await fetch(`${URL}users`, {
@@ -51,16 +71,39 @@ export const signUp = (userData) => async (dispatch) => {
     });
 
     if (!response.ok) {
-      console.log('Ошибка регистрации1');
-      return;
+      const errorData = await response.json();
+      console.log('Ошибка регистрации:', errorData);
+      throw new Error('Ошибка регистрации. Пожалуйста, проверьте введенные данные.');
     }
 
     const json = await response.json();
     dispatch({ type: 'USER_SIGNUP_SUCCESS', payload: json.user });
+    return json.user.token;
   } catch (error) {
-    console.log('Ошибка регистрации2');
+    console.log('Ошибка регистрации:', error.message);
+    throw error;
   }
 };
+
+// export const signIn = (userData) => async (dispatch) => {
+//   try {
+//     const response = await fetch(`${URL}users/login`, {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ user: userData }),
+//     });
+//
+//     if (!response.ok) {
+//       console.log('Ошибка авторизации1');
+//       return;
+//     }
+//
+//     const json = await response.json();
+//     dispatch({ type: 'USER_SIGNIN_SUCCESS', payload: json.user });
+//   } catch (error) {
+//     console.log('Ошибка авторизации2');
+//   }
+// };
 
 export const signIn = (userData) => async (dispatch) => {
   try {
@@ -71,14 +114,23 @@ export const signIn = (userData) => async (dispatch) => {
     });
 
     if (!response.ok) {
-      console.log('Ошибка авторизации1');
-      return;
+      const errorData = await response.json();
+      console.log('Ошибка авторизации:', errorData);
+      return dispatch({ type: 'USER_SIGNIN_FAILURE', payload: errorData });
     }
 
     const json = await response.json();
+    const { token, username } = json.user;
+
+    localStorage.setItem('jwtToken', token);
+
     dispatch({ type: 'USER_SIGNIN_SUCCESS', payload: json.user });
+    // return json.user.token;
+    return { token, username };
   } catch (error) {
-    console.log('Ошибка авторизации2');
+    console.log('Ошибка авторизации', error.message);
+    dispatch({ type: 'USER_SIGNIN_FAILURE', payload: { message: error.message } });
+    throw error;
   }
 };
 
@@ -87,7 +139,7 @@ export const editProfile = (userData, token) => async (dispatch) => {
     const response = await fetch(`${URL}user`, {
       method: 'PUT',
       headers: {
-        Authorization: `Token ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ user: userData }),
@@ -95,7 +147,7 @@ export const editProfile = (userData, token) => async (dispatch) => {
 
     if (!response.ok) {
       console.log('Ошибка редактирования профиля-1');
-      return null;
+      // return null;
     }
 
     const json = await response.json();

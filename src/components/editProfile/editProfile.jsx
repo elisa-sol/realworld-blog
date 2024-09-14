@@ -14,6 +14,11 @@ import { UserContext } from '../../userContext/userContext';
 import Loader from '../loader/loader';
 
 function EditProfile() {
+  // const token = localStorage.getItem('token'); // Проверяем наличие токена
+  // if (!token) {
+  //   console.log('Токен отсутствует');
+  // }
+
   const {
     register,
     handleSubmit,

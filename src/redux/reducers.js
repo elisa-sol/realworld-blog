@@ -19,6 +19,7 @@ const initialState = {
   repeatPassword: '',
   agreement: false,
   user: null,
+  token: null,
   error: null,
 };
 
@@ -49,7 +50,16 @@ const rootReducer = (state = initialState, action) => {
     case 'USER_EDITING_SUCCESS':
       return {
         ...state,
-        user: action.payload,
+        user: action.payload.user,
+        token: action.payload.token || state.token, // Сохраняем токен, если есть
+        error: null, // Очищаем ошибку при успешной авторизации
+      };
+    case 'USER_SIGNIN_FAILURE':
+      return {
+        ...state,
+        user: null, // Обнуляем данные пользователя в случае ошибки
+        token: null, // Обнуляем токен в случае ошибки
+        error: action.payload.error, // Сохраняем информацию об ошибке
       };
     default:
       return state;

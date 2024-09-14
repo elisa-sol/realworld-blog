@@ -17,6 +17,7 @@ export function UserProvider({ children }) {
 
   const loginUser = (userData) => {
     const userToSave = { ...userData, isLoggedIn: true };
+    console.log('Saving user data:', userToSave);
     localStorage.setItem('user', JSON.stringify(userToSave));
     setUser(userToSave);
   };
