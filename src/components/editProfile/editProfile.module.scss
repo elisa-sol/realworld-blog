@@ -81,9 +81,18 @@
   color: #fff;
   border: none;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 0;
 }
 
 .errors {
   color: red;
+}
+
+.success {
+  color: darkolivegreen;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //margin-top: 10px;
+  font-size: 16px;
 }

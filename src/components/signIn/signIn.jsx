@@ -76,7 +76,7 @@ function SignIn() {
           />
           {errors.password && <span className={classes.errors}>{errors.password.message}</span>}
         </div>
-        {loginError && <span className={classes.errors}>{loginError}</span>} {/* Отображение ошибки входа */}
+        {loginError && <span className={classes.errors}>{loginError}</span>}
         <button className={classes.btn} type="submit">
           Login
         </button>

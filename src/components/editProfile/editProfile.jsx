@@ -26,6 +26,7 @@ function EditProfile() {
   const { user, loginUser } = useContext(UserContext);
   const dispatch = useDispatch();
   const [loginError, setLoginError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const onSubmit = async (data) => {
     try {
@@ -34,6 +35,7 @@ function EditProfile() {
       localStorage.setItem('signUpData', JSON.stringify(updatedUser));
       loginUser(updatedUser);
       await dispatch(editProfile(data));
+      setSuccessMessage('Profile updated successfully!');
     } catch (error) {
       setLoginError('Invalid email or password');
     }
@@ -111,7 +113,6 @@ function EditProfile() {
             type="url"
             placeholder="Avatar image"
             defaultValue={user.image}
-            // defaultValue="https://1avatara.ru/pic/star/star00079.jpg"
             {...register('image', {
               required: false,
               validate: () => isURL(watch('image')) || 'Invalid url format',
@@ -120,6 +121,7 @@ function EditProfile() {
           {errors.image && <span className={classes.errors}>{errors.image.message}</span>}
         </div>
         {loginError && <span className={classes.errors}>{loginError}</span>} {/* Отображение ошибки входа */}
+        {successMessage && <span className={classes.success}>{successMessage}</span>}
         <button type="submit" className={classes.btn}>
           Save
         </button>
