@@ -7,6 +7,7 @@ import ArticleAlone from './components/articleAlone/articleAlone';
 import ArticlesList from './components/aticlesList/articlesList';
 import EditProfile from './components/editProfile/editProfile';
 import Header from './components/header/header';
+import NewArticle from './components/newArticle/newArticle';
 import SignIn from './components/signIn/signIn';
 import SignUp from './components/signUp/signUp';
 import { UserProvider } from './userContext/userContext';
@@ -22,6 +23,7 @@ function App() {
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/profile" element={<EditProfile />} />
+          <Route path="/new-article" element={<NewArticle />} />
         </Routes>
       </UserProvider>
     </div>

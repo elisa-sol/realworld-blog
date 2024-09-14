@@ -18,9 +18,9 @@ function Header() {
       <div className={classes['header-buttons']}>
         {user ? (
           <div className={classes.container}>
-            <button className={classes['create-article']} type="button">
+            <Link className={classes['create-article']} to="/new-article" style={{ textDecoration: 'none' }}>
               Create article
-            </button>
+            </Link>
             <Link className={classes.username} to="/profile" style={{ textDecoration: 'none', color: 'black' }}>
               {user.username}
             </Link>
