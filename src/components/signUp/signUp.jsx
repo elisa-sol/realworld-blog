@@ -1,13 +1,15 @@
 import React, { useContext } from 'react';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import isEmail from 'validator/lib/isEmail';
 
 import classes from './signUp.module.scss';
-import { UserContext } from '../../userContext/userContext';
-import { useDispatch } from 'react-redux';
 import { signUp } from '../../redux/actions';
+import { UserContext } from '../../userContext/userContext';
 
 function SignUp() {
   const {
@@ -45,7 +47,7 @@ function SignUp() {
         <div className={classes.name}>
           Username
           <input
-            className={classes.username}
+            className={`${classes.username} ${errors.username ? classes.inputError : ''}`}
             id="username"
             type="text"
             placeholder="Username"
@@ -67,7 +69,7 @@ function SignUp() {
         <div className={classes.name}>
           Email address
           <input
-            className={classes.email}
+            className={`${classes.email} ${errors.email ? classes.inputError : ''}`}
             id="email"
             type="text"
             placeholder="Email address"
@@ -82,7 +84,7 @@ function SignUp() {
         <div className={classes.name}>
           Password
           <input
-            className={classes.password}
+            className={`${classes.password} ${errors.password ? classes.inputError : ''}`}
             id="password"
             type="password"
             placeholder="Password"
@@ -104,7 +106,7 @@ function SignUp() {
         <div className={classes.name}>
           Repeat Password
           <input
-            className={classes.repeat}
+            className={`${classes.repeat} ${errors.repeatPassword ? classes.inputError : ''}`}
             id="repeatPassword"
             type="password"
             placeholder="Password"

@@ -52,7 +52,7 @@ function EditProfile() {
         <div className={classes.name}>
           Username
           <input
-            className={classes.username}
+            className={`${classes.username} ${errors.username ? classes.inputError : ''}`}
             id="username"
             type="text"
             defaultValue={user.username}
@@ -73,7 +73,7 @@ function EditProfile() {
         <div className={classes.name}>
           Email address
           <input
-            className={classes.email}
+            className={`${classes.email} ${errors.email ? classes.inputError : ''}`}
             id="email"
             type="text"
             defaultValue={user.email}
@@ -87,7 +87,7 @@ function EditProfile() {
         <div className={classes.name}>
           New password
           <input
-            className={classes.password}
+            className={`${classes.password} ${errors.password ? classes.inputError : ''}`}
             id="password"
             type="password"
             placeholder="New password"
@@ -108,7 +108,7 @@ function EditProfile() {
         <div className={classes.name}>
           Avatar image (url)
           <input
-            className={classes.avatar}
+            className={`${classes.avatar} ${errors.image ? classes.inputError : ''}`}
             id="image"
             type="url"
             placeholder="Avatar image"

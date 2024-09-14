@@ -46,7 +46,7 @@ function SignIn() {
         <div className={classes.name}>
           Email address
           <input
-            className={classes.input}
+            className={`${classes.input} ${errors.email ? classes.inputError : ''}`}
             type="text"
             placeholder="Email address"
             {...register('email', {
@@ -59,7 +59,7 @@ function SignIn() {
         <div className={classes.name}>
           Password
           <input
-            className={classes.input}
+            className={`${classes.input} ${errors.password ? classes.inputError : ''}`}
             type="password"
             placeholder="Password"
             {...register('password', {

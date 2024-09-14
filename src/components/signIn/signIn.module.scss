@@ -54,6 +54,7 @@
   border: 1px solid #d9d9d9;
   border-radius: 4px;
   outline: none;
+  color: black;
 }
 
 .btn {
@@ -88,4 +89,8 @@
 
 .errors {
   color: red;
+}
+
+.inputError {
+  border: 1px solid red;
 }
