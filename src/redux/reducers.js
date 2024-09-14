@@ -18,6 +18,8 @@ const initialState = {
   password: '',
   repeatPassword: '',
   agreement: false,
+  user: null,
+  error: null,
 };
 
 // eslint-disable-next-line default-param-last
@@ -42,14 +44,12 @@ const rootReducer = (state = initialState, action) => {
         article: action.payload,
         isLoading: false,
       };
-    case 'UPDATE_FORM_FIELD':
+    case 'USER_SIGNUP_SUCCESS':
+    case 'USER_SIGNIN_SUCCESS':
+    case 'USER_EDITING_SUCCESS':
       return {
         ...state,
-        [action.payload.field]: action.payload.value,
-      };
-    case 'SUBMIT_FORM':
-      return {
-        ...state,
+        user: action.payload,
       };
     default:
       return state;

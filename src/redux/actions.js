@@ -42,11 +42,68 @@ export const watchArticle = (slug) => async (dispatch) => {
   }
 };
 
-export const updateFormField = (field, value) => ({
-  type: 'UPDATE_FORM_FIELD',
-  payload: { field, value },
-});
+export const signUp = (userData) => async (dispatch) => {
+  try {
+    const response = await fetch(`${URL}users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: userData }),
+    });
 
-export const submitForm = () => ({
-  type: 'SUBMIT_FORM',
-});
+    if (!response.ok) {
+      console.log('Ошибка регистрации1');
+      return;
+    }
+
+    const json = await response.json();
+    dispatch({ type: 'USER_SIGNUP_SUCCESS', payload: json.user });
+  } catch (error) {
+    console.log('Ошибка регистрации2');
+  }
+};
+
+export const signIn = (userData) => async (dispatch) => {
+  try {
+    const response = await fetch(`${URL}users/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: userData }),
+    });
+
+    if (!response.ok) {
+      console.log('Ошибка авторизации1');
+      return;
+    }
+
+    const json = await response.json();
+    dispatch({ type: 'USER_SIGNIN_SUCCESS', payload: json.user });
+  } catch (error) {
+    console.log('Ошибка авторизации2');
+  }
+};
+
+export const editProfile = (userData, token) => async (dispatch) => {
+  try {
+    const response = await fetch(`${URL}user`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Token ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: userData }),
+    });
+
+    if (!response.ok) {
+      console.log('Ошибка редактирования профиля-1');
+      return null;
+    }
+
+    const json = await response.json();
+    dispatch({ type: 'USER_EDITING_SUCCESS', payload: json.user });
+
+    return json.user;
+  } catch (error) {
+    console.log('Ошибка редактирования профиля-2:', error);
+    return null;
+  }
+};

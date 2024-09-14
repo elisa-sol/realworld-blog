@@ -28,6 +28,13 @@
   padding: 10px;
 }
 
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
 .create-article {
   color: #52c41a;
   border: 1px solid #52c41a;
@@ -63,4 +70,10 @@
   text-align: left;
   margin-left: 10px;
   cursor: pointer;
+}
+
+.image {
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
 }
