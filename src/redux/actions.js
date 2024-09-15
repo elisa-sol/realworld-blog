@@ -12,6 +12,7 @@ export const fetchArticles =
       }
       const json = await response.json();
       console.log(json);
+      console.log('xyi');
       dispatch({
         type: 'ARTICLES_LIST_SUCCESS',
         payload: {
@@ -122,6 +123,37 @@ export const editProfile = (userData, token) => async (dispatch) => {
       type: 'USER_UPDATING_FAILURE',
       payload: { message: 'Произошла ошибка при обновлении профиля. Пожалуйста, попробуйте позже.' },
     });
+    throw error;
+  }
+};
+
+export const addArticle = (articleData, token) => async (dispatch) => {
+  try {
+    console.log(JSON.stringify({ article: articleData }));
+    console.log(typeof articleData.tags);
+    const response = await fetch(`${URL}articles`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Token ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ article: articleData }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return dispatch({ type: 'ADDING_ARTICLE_FAILURE', payload: errorData });
+    }
+    const json = await response.json();
+    // const { token: responseToken } = json.article;
+
+    // localStorage.setItem('jwtToken', token);
+
+    return dispatch({ type: 'ADDING_ARTICLE_SUCCESS', payload: json.article });
+    // return { token: responseToken };
+  } catch (error) {
+    console.log('Ошибка авторизации', error.message);
+    dispatch({ type: 'ADDING_ARTICLE_FAILURE', payload: { message: error.message } });
     throw error;
   }
 };

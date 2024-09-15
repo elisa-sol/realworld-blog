@@ -12,6 +12,7 @@ const initialState = {
     tagList: [],
     author: {},
     body: '',
+    tags: [],
   },
   username: '',
   email: '',
@@ -61,6 +62,11 @@ const rootReducer = (state = initialState, action) => {
         user: null,
         token: null,
         error: action.payload.error,
+      };
+    case 'ADDING_ARTICLE_SUCCESS':
+      return {
+        ...state,
+        tags: action.payload.tags,
       };
     default:
       return state;
