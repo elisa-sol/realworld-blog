@@ -14,11 +14,6 @@ import { UserContext } from '../../userContext/userContext';
 import Loader from '../loader/loader';
 
 function EditProfile() {
-  // const token = localStorage.getItem('token'); // Проверяем наличие токена
-  // if (!token) {
-  //   console.log('Токен отсутствует');
-  // }
-
   const {
     register,
     handleSubmit,
@@ -32,20 +27,6 @@ function EditProfile() {
   const dispatch = useDispatch();
   const [loginError, setLoginError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
-  // const onSubmit = async (data) => {
-  //   try {
-  //     const token = await dispatch(editProfile(data));
-  //     if (token) {
-  //       localStorage.setItem('jwtToken', token);
-  //       loginUser({ ...user, ...data });
-  //     } else {
-  //       console.log(2);
-  //     }
-  //   } catch (error) {
-  //     setLoginError('Invalid email or password');
-  //   }
-  // };
 
   const onSubmit = async (data) => {
     try {

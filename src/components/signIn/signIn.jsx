@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux'; // Импортируем useDispatch
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import isEmail from 'validator/lib/isEmail';
@@ -21,23 +21,9 @@ function SignIn() {
   });
 
   const { loginUser } = useContext(UserContext);
-  // console.log('Current user:', user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loginError, setLoginError] = useState('');
-
-  // const onSubmit = async (data) => {
-  //   try {
-  //     const savedData = JSON.parse(localStorage.getItem('signUpData'));
-  //     if (savedData && savedData.email === data.email && savedData.password === data.password) {
-  //       loginUser(savedData);
-  //     }
-  //     await dispatch(signIn(data));
-  //     navigate('/');
-  //   } catch (error) {
-  //     setLoginError('Invalid email or password');
-  //   }
-  // };
 
   const onSubmit = async (data) => {
     try {
