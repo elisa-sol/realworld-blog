@@ -42,54 +42,26 @@ export const watchArticle = (slug) => async (dispatch) => {
   }
 };
 
-// export const signUp = (userData) => async (dispatch) => {
-//   try {
-//     const response = await fetch(`${URL}users`, {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ user: userData }),
-//     });
-//
-//     if (!response.ok) {
-//       const errorData = await response.json();
-//       console.log('Ошибка регистрации:', errorData);
-//       throw new Error('Ошибка регистрации. Пожалуйста, проверьте введенные данные.');
-//     }
-//
-//     const json = await response.json();
-//     dispatch({ type: 'USER_SIGNUP_SUCCESS', payload: json.user });
-//     return json.user.token;
-//   } catch (error) {
-//     console.log('Ошибка регистрации:', error.message);
-//     throw error;
-//   }
-// };
-
-export const signUp = (userData) => async () => {
+export const signUp = (userData) => async (dispatch) => {
   try {
-    const response = await fetch(`${URL}signup`, {
+    const response = await fetch(`${URL}users`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: userData }),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      // Передайте информацию об ошибке обратно в компонент
-      return Promise.reject(errorData);
+      console.log('Ошибка регистрации:', errorData);
+      throw new Error('Ошибка регистрации. Пожалуйста, проверьте введенные данные.');
     }
 
     const json = await response.json();
-    // dispatch({ type: 'USER_SIGNUP_SUCCESS', payload: json.user });
-
-    const { token } = json;
-
-    return token;
+    dispatch({ type: 'USER_SIGNUP_SUCCESS', payload: json.user });
+    return json.user.token;
   } catch (error) {
-    console.log('Registration error:', error);
-    return Promise.reject(error);
+    console.log('Ошибка регистрации:', error.message);
+    throw error;
   }
 };
 
