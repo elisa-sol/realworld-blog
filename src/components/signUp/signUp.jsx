@@ -26,22 +26,6 @@ function SignUp() {
   const dispatch = useDispatch();
   const [loginError, setLoginError] = useState('');
 
-  // const onSubmit = async (data) => {
-  //   try {
-  //     const token = await dispatch(signUp(data));
-  //
-  //     if (token) {
-  //       localStorage.setItem('jwtToken', token);
-  //       loginUser(data);
-  //       navigate('/');
-  //     } else {
-  //       setLoginError('Username or email is already taken.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Ошибка регистрации:', error.message);
-  //   }
-  // };
-
   const onSubmit = async (data) => {
     try {
       const token = await dispatch(signUp(data));
