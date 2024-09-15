@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import isEmail from 'validator/lib/isEmail';
@@ -35,7 +35,7 @@ function SignIn() {
         loginUser({ ...data, username, token, image: img });
         navigate('/');
       } else {
-        console.log(1);
+        setLoginError('Invalid email or password');
       }
     } catch (error) {
       setLoginError('Invalid email or password');

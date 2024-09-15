@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useForm } from 'react-hook-form';
@@ -24,6 +24,23 @@ function SignUp() {
   const { loginUser } = useContext(UserContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loginError, setLoginError] = useState('');
+
+  // const onSubmit = async (data) => {
+  //   try {
+  //     const token = await dispatch(signUp(data));
+  //
+  //     if (token) {
+  //       localStorage.setItem('jwtToken', token);
+  //       loginUser(data);
+  //       navigate('/');
+  //     } else {
+  //       setLoginError('Username or email is already taken.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Ошибка регистрации:', error.message);
+  //   }
+  // };
 
   const onSubmit = async (data) => {
     try {
@@ -35,7 +52,15 @@ function SignUp() {
         navigate('/');
       }
     } catch (error) {
-      console.error('Ошибка регистрации:', error.message);
+      console.log('Ошибка регистрации:', error.message);
+
+      if (error.email) {
+        setLoginError('Email is already taken.');
+      } else if (error.username) {
+        setLoginError('Username is already taken.');
+      } else {
+        setLoginError('Username or email is already taken.');
+      }
     }
   };
 
@@ -134,7 +159,7 @@ function SignUp() {
           </label>
           {errors.agreement && <span className={classes.errors}>{errors.agreement.message}</span>}
         </div>
-
+        {loginError && <span className={classes.errors}>{loginError}</span>}
         <button className={classes.btn} type="submit">
           Create
         </button>
