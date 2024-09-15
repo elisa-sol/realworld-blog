@@ -44,7 +44,9 @@ function SignIn() {
       const { token, username } = await dispatch(signIn(data));
       if (token) {
         localStorage.setItem('jwtToken', token);
-        loginUser({ ...data, username, token });
+        const mail = `${data.email}-image`;
+        const img = localStorage.getItem(mail);
+        loginUser({ ...data, username, token, image: img });
         navigate('/');
       } else {
         console.log(1);

@@ -33,16 +33,49 @@ function EditProfile() {
   const [loginError, setLoginError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // const onSubmit = async (data) => {
+  //   try {
+  //     const token = await dispatch(editProfile(data));
+  //     if (token) {
+  //       localStorage.setItem('jwtToken', token);
+  //       loginUser({ ...user, ...data });
+  //     } else {
+  //       console.log(2);
+  //     }
+  //   } catch (error) {
+  //     setLoginError('Invalid email or password');
+  //   }
+  // };
+
   const onSubmit = async (data) => {
     try {
-      const updatedUser = { ...user, ...data };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      localStorage.setItem('signUpData', JSON.stringify(updatedUser));
-      loginUser(updatedUser);
-      await dispatch(editProfile(data));
-      setSuccessMessage('Profile updated successfully!');
+      const token = localStorage.getItem('jwtToken');
+      if (!token) {
+        setLoginError('Token not found. Please log in again.');
+        return;
+      }
+      const resultToken = await dispatch(editProfile(data, token));
+      if (resultToken) {
+        localStorage.setItem('jwtToken', resultToken);
+
+        const mail = `${data.email}-image`;
+        localStorage.setItem(mail, data.image || user.image);
+
+        const updatedUser = { ...user, ...data, image: data.image || user.image };
+        loginUser(updatedUser);
+        setSuccessMessage('Profile updated successfully');
+        setLoginError('');
+      } else {
+        setLoginError('Error updating profile. Invalid token.');
+        setSuccessMessage('');
+      }
     } catch (error) {
-      setLoginError('Invalid email or password');
+      if (error.message === 'jwt malformed') {
+        setLoginError('Invalid token. Please log in again.');
+      } else {
+        setLoginError('Error updating profile');
+      }
+      setSuccessMessage('');
     }
   };
 

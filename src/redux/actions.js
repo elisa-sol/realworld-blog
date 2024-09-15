@@ -134,28 +134,115 @@ export const signIn = (userData) => async (dispatch) => {
   }
 };
 
+// export const editProfile = (userData, token) => async (dispatch) => {
+//   try {
+//     const response = await fetch(`${URL}user`, {
+//       method: 'PUT',
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ user: userData }),
+//     });
+//
+//     if (!response.ok) {
+//       const errorData = await response.json();
+//       console.log('Ошибка редактирования профиля-1');
+//       return dispatch({ type: 'USER_UPDATING_FAILURE', payload: errorData });
+//     }
+//
+//     const json = await response.json();
+//     localStorage.setItem('jwtToken', token);
+//
+//     dispatch({ type: 'USER_EDITING_SUCCESS', payload: json.user });
+//
+//     return json.user.token;
+//   } catch (error) {
+//     console.log('Ошибка редактирования профиля-2:', error);
+//     dispatch({ type: 'USER_UPDATING_FAILURE', payload: { message: error.message } });
+//     throw error;
+//   }
+// };
+
+// export const editProfile = (userData, token) => async (dispatch) => {
+//   try {
+//     const response = await fetch(`${URL}user`, {
+//       method: 'PUT',
+//       headers: {
+//         Authorization: `Token ${token}`,
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ user: userData }),
+//     });
+//
+//     // Проверка на успешность запроса
+//     if (!response.ok) {
+//       const errorData = await response.json();
+//       console.log('Ошибка редактирования профиля:', errorData);
+//
+//       // Диспатчим ошибку с точными данными
+//       return dispatch({ type: 'USER_UPDATING_FAILURE', payload: errorData });
+//     }
+//
+//     // Если запрос успешен
+//     const json = await response.json();
+//
+//     // Обновляем токен в localStorage только при успешном ответе
+//     localStorage.setItem('jwtToken', json.user.token);
+//
+//     // Диспатчим успешное обновление профиля
+//     dispatch({ type: 'USER_EDITING_SUCCESS', payload: json.user });
+//
+//     // Возвращаем токен для дальнейшего использования
+//     return json.user.token;
+//   } catch (error) {
+//     // Логируем ошибку
+//     console.log('Ошибка редактирования профиля:', error.message);
+//
+//     // Диспатчим ошибку с общим сообщением
+//     dispatch({
+//       type: 'USER_UPDATING_FAILURE',
+//       payload: { message: 'Произошла ошибка при обновлении профиля. Пожалуйста, попробуйте позже.' },
+//     });
+//
+//     // Выбрасываем ошибку для возможной обработки выше по цепочке
+//     throw error;
+//   }
+// };
+
 export const editProfile = (userData, token) => async (dispatch) => {
   try {
     const response = await fetch(`${URL}user`, {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Token ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ user: userData }),
     });
 
+    console.log('User data being sent:', userData);
+
     if (!response.ok) {
-      console.log('Ошибка редактирования профиля-1');
-      // return null;
+      const errorData = await response.json();
+      return dispatch({ type: 'USER_UPDATING_FAILURE', payload: errorData });
     }
 
     const json = await response.json();
+    const { token: responseToken, image } = json.user;
+
+    localStorage.setItem('jwtToken', json.user.token);
     dispatch({ type: 'USER_EDITING_SUCCESS', payload: json.user });
 
-    return json.user;
+    // return json.user.token;
+
+    return { token: responseToken, image };
   } catch (error) {
-    console.log('Ошибка редактирования профиля-2:', error);
-    return null;
+    console.log('Profile edit error:', error);
+    dispatch({
+      type: 'USER_UPDATING_FAILURE',
+      payload: { message: 'Произошла ошибка при обновлении профиля. Пожалуйста, попробуйте позже.' },
+    });
+    throw error;
   }
 };

@@ -51,15 +51,16 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         user: action.payload.user,
-        token: action.payload.token || state.token, // Сохраняем токен, если есть
-        error: null, // Очищаем ошибку при успешной авторизации
+        token: action.payload.token || state.token,
+        error: null,
       };
     case 'USER_SIGNIN_FAILURE':
+    case 'USER_UPDATING_FAILURE':
       return {
         ...state,
-        user: null, // Обнуляем данные пользователя в случае ошибки
-        token: null, // Обнуляем токен в случае ошибки
-        error: action.payload.error, // Сохраняем информацию об ошибке
+        user: null,
+        token: null,
+        error: action.payload.error,
       };
     default:
       return state;
