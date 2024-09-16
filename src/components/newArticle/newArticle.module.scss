@@ -60,6 +60,7 @@
   border: 1px solid #d9d9d9;
   border-radius: 4px;
   outline: none;
+  color: rgba(0, 0, 0, 0.75);
 }
 
 .text {
@@ -79,10 +80,7 @@
 }
 
 .tag {
-  //display: flex;
   height: 40px;
-  //justify-items: center;
-  //align-items: center;
 }
 
 .delete {
@@ -93,7 +91,6 @@
 .add-tag {
   width: 120px;
   height: 40px;
-  //margin-top: 25px;
   border-radius: 4px;
   background-color: white;
   padding: 8px 16px;

@@ -10,6 +10,7 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem('user'));
+    // const savedUser = JSON.parse(localStorage.getItem('jwtToken'));
     if (savedUser && savedUser.isLoggedIn) {
       setUser({
         ...savedUser,
@@ -25,11 +26,13 @@ export function UserProvider({ children }) {
       image: userData.image || 'https://static.productionready.io/images/smiley-cyrus.jpg',
     };
     localStorage.setItem('user', JSON.stringify(userToSave));
+    // localStorage.setItem('jwtToken', JSON.stringify(userToSave));
     setUser(userToSave);
   };
 
   const logoutUser = () => {
     localStorage.removeItem('user');
+    // localStorage.removeItem('jwtToken');
     setUser(null);
     navigate('/');
   };

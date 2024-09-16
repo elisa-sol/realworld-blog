@@ -1,8 +1,15 @@
 import React from 'react';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
+import { editArticle } from '../../redux/actions';
 import classes from '../newArticle/newArticle.module.scss';
 
 function EditArticle() {
+  const dispatch = useDispatch();
+  const { slug } = useParams();
+
   return (
     <div className={classes['new-article']}>
       <div className={classes.header}> Edit article </div>
@@ -24,14 +31,12 @@ function EditArticle() {
             Tags
             <input className={classes.tag} placeholder="Tag" />
           </div>
-          {/* <div className={classes['button-container']}> */}
           <button type="button" className={classes.delete}>
             Delete
           </button>
           <button type="button" className={classes['add-tag']}>
             Add tag
           </button>
-          {/* </div> */}
         </div>
         <button type="button" className={classes.send}>
           Send

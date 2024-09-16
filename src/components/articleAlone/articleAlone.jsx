@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 
 import { HeartOutlined } from '@ant-design/icons';
 import { format } from 'date-fns';
@@ -15,10 +15,40 @@ function ArticleAlone() {
   const dispatch = useDispatch();
   const { article } = useSelector((state) => state);
   const { slug } = useParams();
+  const [localUser, setLocalUser] = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    setLocalUser(user);
+  }, []);
 
   useEffect(() => {
     dispatch(watchArticle(slug));
   }, [dispatch, slug]);
+
+  const currentUser = useSelector((state) => state.article.author.username);
+  console.log(currentUser);
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    // Обновление состояния в зависимости от localUser и currentUser
+    if (localUser && currentUser && article.author.username === localUser.username) {
+      setIsOwner(true);
+    } else {
+      setIsOwner(false);
+    }
+  }, [localUser, currentUser, article.author.username]);
+
+  const handleDelete = useCallback(() => {
+    if (isOwner) {
+      // Логика удаления поста
+      console.log('Удалить пост');
+    } else {
+      console.log('Вы не можете удалить этот пост');
+    }
+  }, [isOwner]);
+
+  console.log(isOwner);
 
   if (!article.slug) return <Loader />;
 
@@ -61,8 +91,18 @@ function ArticleAlone() {
       </div>
       <div className={classes['description-upgraded']}>{article.description}</div>
       <Markdown className={classes.markdown} children={article.body} />
+      {isOwner && (
+        <div className={classes['button-container']}>
+          <button type="button" className={classes.delete} onClick={handleDelete}>
+            Delete
+          </button>
+          <button type="button" className={classes.edit}>
+            Edit
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
-export default ArticleAlone;
+export default memo(ArticleAlone);
