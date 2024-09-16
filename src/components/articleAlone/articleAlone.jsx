@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import Markdown from 'react-markdown';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { watchArticle } from '../../redux/actions';
 import classes from '../articleItem/articleItem.module.scss';
@@ -13,6 +13,7 @@ import Loader from '../loader/loader';
 
 function ArticleAlone() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { article } = useSelector((state) => state);
   const { slug } = useParams();
   const [localUser, setLocalUser] = useState(null);
@@ -31,7 +32,6 @@ function ArticleAlone() {
   const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
-    // Обновление состояния в зависимости от localUser и currentUser
     if (localUser && currentUser && article.author.username === localUser.username) {
       setIsOwner(true);
     } else {
@@ -39,9 +39,10 @@ function ArticleAlone() {
     }
   }, [localUser, currentUser, article.author.username]);
 
+  const handleEdit = () => {};
+
   const handleDelete = useCallback(() => {
     if (isOwner) {
-      // Логика удаления поста
       console.log('Удалить пост');
     } else {
       console.log('Вы не можете удалить этот пост');
@@ -96,9 +97,9 @@ function ArticleAlone() {
           <button type="button" className={classes.delete} onClick={handleDelete}>
             Delete
           </button>
-          <button type="button" className={classes.edit}>
+          <Link className={classes.edit} to={`/articles/${article.slug}/edit`} style={{ textDecoration: 'none' }}>
             Edit
-          </button>
+          </Link>
         </div>
       )}
     </div>
