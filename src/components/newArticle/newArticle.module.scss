@@ -2,8 +2,10 @@
   display: flex;
   flex-direction: column;
   width: 938px;
+  height: auto;
+  min-height: 701px;
   box-sizing: border-box;
-  margin: 50px auto 0;
+  margin: 50px auto 20px;
   padding: 50px 30px;
   font-family: 'Roboto-Regular', 'Segoe UI', sans-serif;
   font-weight: 400;
@@ -70,11 +72,28 @@
   gap: 15px;
 }
 
+.add-tag {
+  position: relative;
+  bottom: 50px;
+  left: 440px;
+}
+
+.tag {
+  //display: flex;
+  height: 40px;
+  //justify-items: center;
+  //align-items: center;
+}
+
+.delete {
+  position: relative;
+}
+
 .delete,
 .add-tag {
   width: 120px;
   height: 40px;
-  margin-top: 25px;
+  //margin-top: 25px;
   border-radius: 4px;
   background-color: white;
   padding: 8px 16px;
@@ -97,6 +116,8 @@
 }
 
 .send {
+  //position: relative;
+  //bottom: 45px;
   margin-right: auto;
   width: 319px;
   height: 40px;
