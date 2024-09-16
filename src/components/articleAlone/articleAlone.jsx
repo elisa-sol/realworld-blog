@@ -13,7 +13,7 @@ import Loader from '../loader/loader';
 
 function ArticleAlone() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { article } = useSelector((state) => state);
   const { slug } = useParams();
   const [localUser, setLocalUser] = useState(null);
@@ -28,7 +28,6 @@ function ArticleAlone() {
   }, [dispatch, slug]);
 
   const currentUser = useSelector((state) => state.article.author.username);
-  console.log(currentUser);
   const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
@@ -39,8 +38,6 @@ function ArticleAlone() {
     }
   }, [localUser, currentUser, article.author.username]);
 
-  const handleEdit = () => {};
-
   const handleDelete = useCallback(() => {
     if (isOwner) {
       console.log('Удалить пост');
@@ -48,8 +45,6 @@ function ArticleAlone() {
       console.log('Вы не можете удалить этот пост');
     }
   }, [isOwner]);
-
-  console.log(isOwner);
 
   if (!article.slug) return <Loader />;
 

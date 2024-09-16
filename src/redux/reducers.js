@@ -61,12 +61,18 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         user: null,
         token: null,
-        error: action.payload.error,
+        error: action.payload.message || action.payload.error,
       };
     case 'ADDING_ARTICLE_SUCCESS':
+    case 'EDIT_ARTICLE_SUCCESS':
       return {
         ...state,
         tags: action.payload.tags,
+      };
+    case 'EDIT_ARTICLE_FAILURE':
+      return {
+        ...state,
+        error: action.payload.message || action.payload.error,
       };
     default:
       return state;

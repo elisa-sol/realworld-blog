@@ -133,7 +133,7 @@ export const addArticle = (articleData, token) => async (dispatch) => {
     const response = await fetch(`${URL}articles`, {
       method: 'POST',
       headers: {
-        Authorization: `Token ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ article: articleData }),
@@ -158,7 +158,7 @@ export const editArticle = (articleData, slug, token) => async (dispatch) => {
     const response = await fetch(`${URL}articles/${slug}`, {
       method: 'PUT',
       headers: {
-        Authorization: `Token ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ article: articleData }),
