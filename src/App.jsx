@@ -15,7 +15,7 @@ import { UserProvider } from './userContext/userContext';
 
 function App() {
   return (
-    <div>
+    <div className={classes.app}>
       <UserProvider>
         <Header />
         <Routes>
