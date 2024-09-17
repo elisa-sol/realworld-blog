@@ -1,17 +1,6 @@
-.app {
-  margin: 0 auto;
-  padding: 0;
-  background-color: lightgrey;
-  font-family: 'Inter', sans-serif;
-  color: rgba(0, 0, 0, 0.85);
-  font-size: 18px;
-  font-weight: 300;
-  line-height: 28px;
-  text-align: left;
-}
-
-//body {
+//.app {
 //  margin: 0 auto;
+//  padding: 0;
 //  background-color: lightgrey;
 //  font-family: 'Inter', sans-serif;
 //  color: rgba(0, 0, 0, 0.85);
@@ -20,3 +9,14 @@
 //  line-height: 28px;
 //  text-align: left;
 //}
+
+body {
+  margin: 0 auto;
+  background-color: lightgrey;
+  font-family: 'Inter', sans-serif;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 28px;
+  text-align: left;
+}
