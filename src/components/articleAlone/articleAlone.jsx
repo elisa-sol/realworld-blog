@@ -56,7 +56,10 @@ function ArticleAlone() {
   }, []);
 
   const handleLike = useCallback(async () => {
-    console.log('like');
+    if (!token) {
+      navigate('/sign-in');
+    }
+
     try {
       const action = isLiked ? 'unlike' : 'like';
       await dispatch(likedArticle(article.slug, token, action));

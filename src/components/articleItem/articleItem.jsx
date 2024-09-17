@@ -25,7 +25,7 @@ function ArticleItem({ article }) {
     if (!token) {
       navigate('/sign-in');
     }
-    console.log('Item');
+
     try {
       const action = isLiked ? 'unlike' : 'like';
       await dispatch(likedArticle(article.slug, token, action));
