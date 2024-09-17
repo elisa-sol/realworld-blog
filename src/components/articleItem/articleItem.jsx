@@ -1,13 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { HeartOutlined } from '@ant-design/icons';
+import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 
 import classes from './articleItem.module.scss';
+import { likedArticle } from '../../redux/actions';
 
 function ArticleItem({ article }) {
+  const token = localStorage.getItem('jwtToken');
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(article.favoritesCount);
+
+  useEffect(() => {
+    const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '[]');
+    setIsLiked(likedArticles.includes(article.slug));
+  }, [article.slug]);
+
+  const handleLike = async () => {
+    if (!token) {
+      navigate('/sign-in');
+    }
+    console.log('Item');
+    try {
+      const action = isLiked ? 'unlike' : 'like';
+      await dispatch(likedArticle(article.slug, token, action));
+
+      const newLikesCount = isLiked ? likesCount - 1 : likesCount + 1;
+      setLikesCount(newLikesCount);
+      setIsLiked(!isLiked);
+
+      const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '[]');
+      if (isLiked) {
+        const updatedLikes = likedArticles.filter((slug) => slug !== article.slug);
+        localStorage.setItem('likedArticles', JSON.stringify(updatedLikes));
+      } else {
+        likedArticles.push(article.slug);
+        localStorage.setItem('likedArticles', JSON.stringify(likedArticles));
+      }
+    } catch (error) {
+      console.log('Ошибка при изменении лайка');
+    }
+  };
+
   const truncate = (str, max = 5) => {
     if (!str) return '';
     const array = str.trim().split(' ');
@@ -25,8 +64,14 @@ function ArticleItem({ article }) {
             </Link>
           </div>
           <div className={classes['likes-container']}>
-            <HeartOutlined className={classes.heart} style={{ fontSize: '18px' }} />
-            <div className={classes.likes}>{article.favoritesCount}</div>
+            {isLiked ? (
+              <HeartFilled onClick={handleLike} className={classes.heart} style={{ fontSize: '18px', color: 'red' }} />
+            ) : (
+              <HeartOutlined onClick={handleLike} className={classes.heart} style={{ fontSize: '18px' }} />
+            )}
+            <div className={classes.likes} onClick={handleLike}>
+              {likesCount}
+            </div>
           </div>
         </div>
 

@@ -70,6 +70,8 @@ const rootReducer = (state = initialState, action) => {
         tags: action.payload.tags,
       };
     case 'EDIT_ARTICLE_FAILURE':
+    case 'LIKE_ARTICLE_FAILURE':
+    case 'DELETE_ARTICLE_FAILURE':
       return {
         ...state,
         error: action.payload.message || action.payload.error,
@@ -79,10 +81,12 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         articles: state.articles.filter((article) => article.slug !== action.payload),
       };
-    case 'DELETE_ARTICLE_FAILURE':
+    case 'LIKE_ARTICLE_SUCCESS':
       return {
         ...state,
-        error: action.payload.message || action.payload.error,
+        articles: state.articles.map((article) =>
+          article.slug === action.payload.slug ? { ...article, favoritesCount: action.payload.favoritesCount } : article
+        ),
       };
     default:
       return state;

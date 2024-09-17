@@ -1,16 +1,16 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { HeartOutlined } from '@ant-design/icons';
+import { HeartFilled, HeartOutlined } from '@ant-design/icons';
+import { Alert, Popconfirm } from 'antd';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import Markdown from 'react-markdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { watchArticle, deleteArticle } from '../../redux/actions';
+import { watchArticle, deleteArticle, likedArticle } from '../../redux/actions';
 import classes from '../articleItem/articleItem.module.scss';
 import Loader from '../loader/loader';
-import { Alert, Popconfirm } from 'antd';
 
 function ArticleAlone() {
   const dispatch = useDispatch();
@@ -20,6 +20,9 @@ function ArticleAlone() {
   const [localUser, setLocalUser] = useState(null);
   const token = localStorage.getItem('jwtToken');
   const [successMessage, setSuccessMessage] = useState('');
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(article.favoritesCount || 0);
+  const currentUser = useSelector((state) => state.article.author.username);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -30,29 +33,49 @@ function ArticleAlone() {
     dispatch(watchArticle(slug));
   }, [dispatch, slug]);
 
-  const currentUser = useSelector((state) => state.article.author.username);
-  const [isOwner, setIsOwner] = useState(false);
-
   useEffect(() => {
-    if (localUser && currentUser && article.author.username === localUser.username) {
-      setIsOwner(true);
-    } else {
-      setIsOwner(false);
-    }
+    const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '[]');
+    setIsLiked(likedArticles.includes(article.slug));
+  }, [article.slug]);
+
+  const isOwner = useMemo(() => {
+    return localUser && currentUser && article.author.username === localUser.username;
   }, [localUser, currentUser, article.author.username]);
 
-  const confirm = () => {
-    console.log('yes');
+  const confirm = useCallback(() => {
     dispatch(deleteArticle(article.slug, token));
     setSuccessMessage('Статья успешно удалена');
     setTimeout(() => {
       navigate('/');
       setSuccessMessage(null);
     }, 1000);
-  };
-  const cancel = () => {
+  }, [dispatch, article.slug, token, navigate]);
+
+  const cancel = useCallback(() => {
     console.log('no');
-  };
+  }, []);
+
+  const handleLike = useCallback(async () => {
+    console.log('like');
+    try {
+      const action = isLiked ? 'unlike' : 'like';
+      await dispatch(likedArticle(article.slug, token, action));
+
+      setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+      setIsLiked(!isLiked);
+
+      const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '[]');
+      if (isLiked) {
+        const updatedLikes = likedArticles.filter((slug) => slug !== article.slug);
+        localStorage.setItem('likedArticles', JSON.stringify(updatedLikes));
+      } else {
+        likedArticles.push(article.slug);
+        localStorage.setItem('likedArticles', JSON.stringify(likedArticles));
+      }
+    } catch (error) {
+      console.log('Ошибка при изменении лайка');
+    }
+  }, [isLiked, dispatch, article.slug, token, likesCount]);
 
   if (!article.slug) return <Loader />;
 
@@ -66,8 +89,14 @@ function ArticleAlone() {
             </Link>
           </div>
           <div className={classes['likes-container']}>
-            <HeartOutlined className={classes.heart} style={{ fontSize: '18px' }} />
-            <div className={classes.likes}>{article.favoritesCount}</div>
+            {isLiked ? (
+              <HeartFilled onClick={handleLike} className={classes.heart} style={{ fontSize: '18px', color: 'red' }} />
+            ) : (
+              <HeartOutlined onClick={handleLike} className={classes.heart} style={{ fontSize: '18px' }} />
+            )}
+            <div className={classes.likes} onClick={handleLike}>
+              {likesCount}
+            </div>
           </div>
         </div>
 

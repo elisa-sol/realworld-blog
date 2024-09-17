@@ -11,7 +11,6 @@ export const fetchArticles =
         console.log('Ошибка загрузки статей1');
       }
       const json = await response.json();
-      console.log(json);
       dispatch({
         type: 'ARTICLES_LIST_SUCCESS',
         payload: {
@@ -128,8 +127,6 @@ export const editProfile = (userData, token) => async (dispatch) => {
 
 export const addArticle = (articleData, token) => async (dispatch) => {
   try {
-    // console.log(JSON.stringify({ article: articleData }));
-    // console.log(typeof articleData.tags);
     const response = await fetch(`${URL}articles`, {
       method: 'POST',
       headers: {
@@ -190,16 +187,33 @@ export const deleteArticle = (slug, token) => async (dispatch) => {
 
     if (!response.ok) {
       console.log('Ошибка удаления статьи1');
-      // const errorData = await response.json();
-      // return dispatch({ type: 'DELETE_ARTICLE_FAILURE', payload: errorData });
     }
-
-    // const json = await response.json();
 
     return dispatch({ type: 'DELETE_ARTICLE_SUCCESS', payload: slug });
   } catch (error) {
     console.log('Ошибка удаления статьи2', error.message);
     dispatch({ type: 'DELETE_ARTICLE_FAILURE', payload: { message: error.message } });
+    throw error;
+  }
+};
+
+export const likedArticle = (slug, token, action) => async (dispatch) => {
+  try {
+    const response = await fetch(`${URL}articles/${slug}/favorite`, {
+      method: action === 'like' ? 'POST' : 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.log('Ошибка оценивания статьи');
+    }
+
+    return dispatch({ type: 'LIKE_ARTICLE_SUCCESS', payload: slug });
+  } catch (error) {
+    console.log('Ошибка оценивания статьи', error.message);
+    dispatch({ type: 'LIKE_ARTICLE_FAILURE', payload: { message: error.message } });
     throw error;
   }
 };

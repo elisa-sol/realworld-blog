@@ -36,8 +36,6 @@ function NewArticle({ article }) {
       } else {
         navigate('/');
       }
-
-      // navigate('/');
     } catch (error) {
       console.log('Ошибка добавления статьи');
     }
@@ -131,66 +129,3 @@ function NewArticle({ article }) {
 }
 
 export default NewArticle;
-
-// import React, { useState } from 'react';
-//
-// // eslint-disable-next-line import/no-extraneous-dependencies
-// // import { useForm } from 'react-hook-form';
-// import { useDispatch } from 'react-redux';
-// import { useNavigate } from 'react-router-dom';
-//
-// // import classes from './newArticle.module.scss';
-// import { addArticle } from '../../redux/actions';
-// import ArticleForm from '../articleForm/articleForm';
-//
-// function NewArticle({ article }) {
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-//   const [tagList, setTagList] = useState(article?.tagList || ['']);
-//
-//   // const onSubmit = async (data) => {
-//   //   try {
-//   //     const articleData = {
-//   //       ...data,
-//   //       tagList: data.filter((tag) => tag.trim() !== ''),
-//   //     };
-//   //
-//   //     const token = localStorage.getItem('jwtToken');
-//   //     await dispatch(addArticle(articleData, token));
-//   //
-//   //     if (!token) {
-//   //       navigate('/sign-in');
-//   //     } else {
-//   //       navigate('/');
-//   //     }
-//   //   } catch (error) {
-//   //     console.log('Ошибка добавления статьи');
-//   //   }
-//   // };
-//
-//   const onSubmit = async (data) => {
-//     try {
-//       const articleData = {
-//         ...data,
-//         tagList: tagList.filter((tag) => tag.trim() !== ''),
-//       };
-//
-//       const token = localStorage.getItem('jwtToken');
-//       await dispatch(addArticle(articleData, token));
-//
-//       if (!token) {
-//         navigate('/sign-in');
-//       } else {
-//         navigate('/');
-//       }
-//
-//       // navigate('/');
-//     } catch (error) {
-//       console.log('Ошибка добавления статьи');
-//     }
-//   };
-//
-//   return <ArticleForm onSubmit={onSubmit} />;
-// }
-//
-// export default NewArticle;

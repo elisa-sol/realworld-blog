@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
+import { Alert } from 'antd';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { editArticle, watchArticle } from '../../redux/actions';
 import classes from '../newArticle/newArticle.module.scss';
-import { Alert } from 'antd';
 
 function EditArticle() {
   const dispatch = useDispatch();
@@ -52,7 +53,6 @@ function EditArticle() {
       if (!token) {
         navigate('/sign-in');
       } else {
-        // navigate('/');
         setSuccessMessage('Статья успешно отредактирована');
         setTimeout(() => {
           navigate('/');
