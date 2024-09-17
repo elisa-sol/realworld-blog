@@ -7,16 +7,19 @@ import Markdown from 'react-markdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { watchArticle } from '../../redux/actions';
+import { watchArticle, deleteArticle } from '../../redux/actions';
 import classes from '../articleItem/articleItem.module.scss';
 import Loader from '../loader/loader';
+import { Alert, Popconfirm } from 'antd';
 
 function ArticleAlone() {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const { article } = useSelector((state) => state);
   const { slug } = useParams();
   const [localUser, setLocalUser] = useState(null);
+  const token = localStorage.getItem('jwtToken');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -38,13 +41,18 @@ function ArticleAlone() {
     }
   }, [localUser, currentUser, article.author.username]);
 
-  const handleDelete = useCallback(() => {
-    if (isOwner) {
-      console.log('Удалить пост');
-    } else {
-      console.log('Вы не можете удалить этот пост');
-    }
-  }, [isOwner]);
+  const confirm = () => {
+    console.log('yes');
+    dispatch(deleteArticle(article.slug, token));
+    setSuccessMessage('Статья успешно удалена');
+    setTimeout(() => {
+      navigate('/');
+      setSuccessMessage(null);
+    }, 1000);
+  };
+  const cancel = () => {
+    console.log('no');
+  };
 
   if (!article.slug) return <Loader />;
 
@@ -89,13 +97,31 @@ function ArticleAlone() {
       <Markdown className={classes.markdown} children={article.body} />
       {isOwner && (
         <div className={classes['button-container']}>
-          <button type="button" className={classes.delete} onClick={handleDelete}>
-            Delete
-          </button>
+          <Popconfirm
+            title="Delete the task"
+            description="Are you sure to delete this task?"
+            onConfirm={confirm}
+            onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+          >
+            <button type="button" className={classes.delete}>
+              Delete
+            </button>
+          </Popconfirm>
+
           <Link className={classes.edit} to={`/articles/${article.slug}/edit`} style={{ textDecoration: 'none' }}>
             Edit
           </Link>
         </div>
+      )}
+      {successMessage && (
+        <Alert
+          message={successMessage}
+          type="success"
+          showIcon
+          style={{ position: 'fixed', bottom: '20px', left: '40%', fontSize: 'large' }}
+        />
       )}
     </div>
   );

@@ -74,6 +74,16 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         error: action.payload.message || action.payload.error,
       };
+    case 'DELETE_ARTICLE_SUCCESS':
+      return {
+        ...state,
+        articles: state.articles.filter((article) => article.slug !== action.payload),
+      };
+    case 'DELETE_ARTICLE_FAILURE':
+      return {
+        ...state,
+        error: action.payload.message || action.payload.error,
+      };
     default:
       return state;
   }

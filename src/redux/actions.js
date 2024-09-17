@@ -178,3 +178,28 @@ export const editArticle = (articleData, slug, token) => async (dispatch) => {
     throw error;
   }
 };
+
+export const deleteArticle = (slug, token) => async (dispatch) => {
+  try {
+    const response = await fetch(`${URL}articles/${slug}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.log('Ошибка удаления статьи1');
+      // const errorData = await response.json();
+      // return dispatch({ type: 'DELETE_ARTICLE_FAILURE', payload: errorData });
+    }
+
+    // const json = await response.json();
+
+    return dispatch({ type: 'DELETE_ARTICLE_SUCCESS', payload: slug });
+  } catch (error) {
+    console.log('Ошибка удаления статьи2', error.message);
+    dispatch({ type: 'DELETE_ARTICLE_FAILURE', payload: { message: error.message } });
+    throw error;
+  }
+};
