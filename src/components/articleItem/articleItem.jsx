@@ -11,6 +11,7 @@ import { likedArticle } from '../../redux/actions';
 
 function ArticleItem({ article }) {
   const token = localStorage.getItem('jwtToken');
+  const user = localStorage.getItem('user');
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLiked, setIsLiked] = useState(false);
@@ -22,7 +23,7 @@ function ArticleItem({ article }) {
   }, [article.slug]);
 
   const handleLike = async () => {
-    if (!token) {
+    if (!token || !user) {
       navigate('/sign-in');
     }
 
