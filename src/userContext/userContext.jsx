@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 export const UserContext = createContext();
@@ -36,3 +37,7 @@ export function UserProvider({ children }) {
 
   return <UserContext.Provider value={{ user, loginUser, logoutUser }}>{children}</UserContext.Provider>;
 }
+
+UserProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};

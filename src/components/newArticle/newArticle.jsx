@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
+import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -129,3 +130,21 @@ function NewArticle({ article }) {
 }
 
 export default NewArticle;
+
+NewArticle.propTypes = {
+  article: PropTypes.shape({
+    slug: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    body: PropTypes.string,
+    tagList: PropTypes.arrayOf(PropTypes.string),
+    createdAt: PropTypes.string,
+    updatedAt: PropTypes.string,
+    favorited: PropTypes.bool,
+    favoritesCount: PropTypes.number,
+    author: PropTypes.shape({
+      username: PropTypes.string,
+      image: PropTypes.string,
+    }),
+  }).isRequired,
+};

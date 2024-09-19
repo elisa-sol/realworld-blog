@@ -139,7 +139,7 @@ function EditProfile() {
           />
           {errors.image && <span className={classes.errors}>{errors.image.message}</span>}
         </div>
-        {loginError && <span className={classes.errors}>{loginError}</span>} {/* Отображение ошибки входа */}
+        {loginError && <span className={classes.errors}>{loginError}</span>}
         {successMessage && <span className={classes.success}>{successMessage}</span>}
         <button type="submit" className={classes.btn}>
           Save
