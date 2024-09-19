@@ -132,6 +132,7 @@ function NewArticle({ article }) {
 export default NewArticle;
 
 NewArticle.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   article: PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
@@ -146,5 +147,5 @@ NewArticle.propTypes = {
       username: PropTypes.string,
       image: PropTypes.string,
     }),
-  }).isRequired,
+  }),
 };
