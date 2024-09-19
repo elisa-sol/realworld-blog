@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
+import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -104,3 +105,21 @@ function ArticleItem({ article }) {
 }
 
 export default ArticleItem;
+
+ArticleItem.propTypes = {
+  article: PropTypes.shape({
+    slug: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    body: PropTypes.string,
+    tagList: PropTypes.arrayOf(PropTypes.string),
+    createdAt: PropTypes.string,
+    updatedAt: PropTypes.string,
+    favorited: PropTypes.bool,
+    favoritesCount: PropTypes.number,
+    author: PropTypes.shape({
+      username: PropTypes.string,
+      image: PropTypes.string,
+    }),
+  }).isRequired,
+};
