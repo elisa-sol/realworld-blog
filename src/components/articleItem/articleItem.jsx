@@ -90,7 +90,7 @@ function ArticleItem({ article }) {
         </div>
       </div>
       <div className={classes.tags}>
-        {article.tagList
+        {(article.tagList || [])
           .filter((tag) => tag.trim() !== '')
           .map((tag, index) => (
             <div className={classes.tag} key={index}>
