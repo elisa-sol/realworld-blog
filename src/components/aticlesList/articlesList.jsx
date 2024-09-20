@@ -4,20 +4,20 @@ import { Pagination } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import classes from './articlesList.module.scss';
-import { fetchArticles } from '../../redux/actions';
+import { fetchArticles } from '../../redux/slices/articlesSlice';
 import ArticleItem from '../articleItem/articleItem';
 import Loader from '../loader/loader';
 
 function ArticlesList() {
   const dispatch = useDispatch();
-  const { articles, totalPages, currentPage, isLoading } = useSelector((state) => state);
+  const { articles, totalPages, currentPage, isLoading } = useSelector((state) => state.articles);
 
   useEffect(() => {
-    dispatch(fetchArticles(currentPage));
+    dispatch(fetchArticles({ page: currentPage }));
   }, [dispatch, currentPage]);
 
   const handlePageChange = (page) => {
-    dispatch(fetchArticles(page));
+    dispatch(fetchArticles({ page }));
   };
 
   if (isLoading) return <Loader />;

@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
 import classes from './articleItem.module.scss';
-import { likedArticle } from '../../redux/actions';
+import { likedArticle } from '../../redux/slices/articlesSlice';
 
 function ArticleItem({ article }) {
   const token = localStorage.getItem('jwtToken');

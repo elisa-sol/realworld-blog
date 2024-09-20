@@ -8,7 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import isEmail from 'validator/lib/isEmail';
 
 import classes from './signUp.module.scss';
-import { signUp } from '../../redux/actions';
+import { signUp } from '../../redux/slices/usersSlice';
 import { UserContext } from '../../userContext/userContext';
 
 function SignUp() {

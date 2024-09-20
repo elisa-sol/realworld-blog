@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { editArticle, watchArticle } from '../../redux/actions';
+import { watchArticle, editArticle } from '../../redux/slices/articlesSlice';
 import classes from '../newArticle/newArticle.module.scss';
 
 function EditArticle() {
@@ -16,7 +16,7 @@ function EditArticle() {
   const [tagList, setTagList] = useState([]);
   const [successMessage, setSuccessMessage] = useState('');
 
-  const article = useSelector((state) => state.articles.find((article) => article.slug === slug));
+  const article = useSelector((state) => state.articles.article);
 
   const {
     register,
@@ -48,7 +48,8 @@ function EditArticle() {
       };
 
       const token = localStorage.getItem('jwtToken');
-      await dispatch(editArticle(articleData, slug, token));
+
+      await dispatch(editArticle({ articleData, slug, token })).unwrap();
 
       if (!token) {
         navigate('/sign-in');

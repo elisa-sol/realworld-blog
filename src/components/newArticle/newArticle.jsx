@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import classes from './newArticle.module.scss';
-import { addArticle } from '../../redux/actions';
+import { addArticle } from '../../redux/slices/articlesSlice';
 
 function NewArticle({ article }) {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ function NewArticle({ article }) {
       };
 
       const token = localStorage.getItem('jwtToken');
-      await dispatch(addArticle(articleData, token));
+      await dispatch(addArticle({ articleData, token }));
 
       if (!token) {
         navigate('/sign-in');

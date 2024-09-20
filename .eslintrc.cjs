@@ -61,5 +61,12 @@ module.exports = {
         peerDependencies: false,
       },
     ],
+    'no-param-reassign': [
+      'error',
+      {
+        props: true,
+        ignorePropertyModificationsFor: ['state', 'acc', 'e'],
+      },
+    ],
   },
 };

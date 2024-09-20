@@ -8,21 +8,21 @@ import Markdown from 'react-markdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { watchArticle, deleteArticle, likedArticle } from '../../redux/actions';
+import { watchArticle, deleteArticle, likedArticle } from '../../redux/slices/articlesSlice';
 import classes from '../articleItem/articleItem.module.scss';
 import Loader from '../loader/loader';
 
 function ArticleAlone() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { article } = useSelector((state) => state);
+  const { article } = useSelector((state) => state.articles);
   const { slug } = useParams();
   const [localUser, setLocalUser] = useState(null);
   const token = localStorage.getItem('jwtToken');
   const [successMessage, setSuccessMessage] = useState('');
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(article.favoritesCount || 0);
-  const currentUser = useSelector((state) => state.article.author.username);
+  const currentUser = useSelector((state) => state.articles.article.author.username);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));

@@ -8,7 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import isEmail from 'validator/lib/isEmail';
 
 import classes from './signIn.module.scss';
-import { signIn } from '../../redux/actions';
+import { signIn } from '../../redux/slices/usersSlice';
 import { UserContext } from '../../userContext/userContext';
 
 function SignIn() {
@@ -27,7 +27,7 @@ function SignIn() {
 
   const onSubmit = async (data) => {
     try {
-      const { token, username } = await dispatch(signIn(data));
+      const { token, username } = await dispatch(signIn(data)).unwrap();
       if (token) {
         localStorage.setItem('jwtToken', token);
         const mail = `${data.email}-image`;

@@ -9,7 +9,7 @@ import isURL from 'validator/es/lib/isURL';
 import isEmail from 'validator/lib/isEmail';
 
 import classes from './editProfile.module.scss';
-import { editProfile } from '../../redux/actions';
+import { editProfile } from '../../redux/slices/usersSlice';
 import { UserContext } from '../../userContext/userContext';
 import Loader from '../loader/loader';
 
