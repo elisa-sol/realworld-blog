@@ -102,22 +102,32 @@ export const deleteArticle = createAsyncThunk('articles/deleteArticle', async (s
   }
 });
 
-export const likedArticle = createAsyncThunk('articles/likedArticle', async (slug, token, action, thunkAPI) => {
+export const likedArticle = createAsyncThunk('articles/likedArticle', async (slug, thunkAPI) => {
   try {
+    const token = thunkAPI.getState().users.token;
+
+    if (!token) {
+      return thunkAPI.rejectWithValue('Токен не найден');
+    }
+
+    const isLiked = thunkAPI.getState().articles.isLiked[slug] || false;
+    const action = isLiked ? 'DELETE' : 'POST';
+
     const response = await fetch(`${URL}articles/${slug}/favorite`, {
-      method: action === 'like' ? 'POST' : 'DELETE',
+      method: action,
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
     });
 
     if (!response.ok) {
-      return thunkAPI.rejectWithValue('Ошибка оценивания статьи1');
+      return thunkAPI.rejectWithValue('Ошибка оценивания статьи');
     }
 
-    return slug;
+    return { slug, isLiked: !isLiked };
   } catch (error) {
-    return thunkAPI.rejectWithValue('Ошибка оценивания статьи2');
+    return thunkAPI.rejectWithValue('Ошибка оценивания статьи');
   }
 });
 
@@ -125,6 +135,7 @@ const articlesSlice = createSlice({
   name: 'articles',
   initialState: {
     articles: [],
+    likedArticles: JSON.parse(localStorage.getItem('likedArticles')) || [],
     article: {
       slug: '',
       title: '',
@@ -138,12 +149,35 @@ const articlesSlice = createSlice({
       },
       body: '',
     },
+    localUser: null,
+    successMessage: '',
+    isLiked: {},
+    likesCount: {},
     currentPage: 1,
     totalPages: 0,
     isLoading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setSuccessMessage: (state, action) => {
+      state.successMessage = action.payload;
+    },
+    setIsLiked: (state, action) => {
+      const { slug, isLiked } = action.payload;
+      state.isLiked[slug] = isLiked;
+    },
+    setLikesCount: (state, action) => {
+      const { slug, count } = action.payload;
+      state.likesCount[slug] = count;
+    },
+    setTagList: (state, action) => {
+      state.tagList = action.payload;
+    },
+    updateLikedArticles: (state, action) => {
+      state.likedArticles = action.payload;
+      localStorage.setItem('likedArticles', JSON.stringify(action.payload));
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchArticles.pending, (state) => {
@@ -213,21 +247,31 @@ const articlesSlice = createSlice({
         state.error = action.payload;
       })
 
-      .addCase(likedArticle.pending, (state) => {
-        state.isLoading = true;
-      })
       .addCase(likedArticle.fulfilled, (state, action) => {
-        state.articles = state.articles.map((article) =>
-          article.slug === action.payload ? { ...article, favoritesCount: article.favoritesCount + 1 } : article
-        );
-        state.isLoading = false;
-        state.error = null;
+        const { slug, isLiked } = action.payload;
+        const article = state.articles.find((a) => a.slug === slug);
+
+        if (article) {
+          article.favoritesCount += isLiked ? 1 : -1;
+        }
+
+        state.isLiked[slug] = isLiked;
+        state.likesCount[slug] = isLiked ? (state.likesCount[slug] || 0) + 1 : (state.likesCount[slug] || 0) - 1;
+
+        if (isLiked) {
+          state.likedArticles.push(slug);
+        } else {
+          state.likedArticles = state.likedArticles.filter((likedSlug) => likedSlug !== slug); // Удаляем статью, если лайк убран
+        }
+
+        localStorage.setItem('likedArticles', JSON.stringify(state.likedArticles));
       })
+
       .addCase(likedArticle.rejected, (state, action) => {
         state.error = action.payload;
-        state.isLoading = false;
       });
   },
 });
 
+export const { setSuccessMessage, setIsLiked, setLikesCount, setTagList, updateLikedArticles } = articlesSlice.actions;
 export default articlesSlice.reducer;

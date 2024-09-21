@@ -1,15 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import isEmail from 'validator/lib/isEmail';
 
 import classes from './signIn.module.scss';
-import { signIn } from '../../redux/slices/usersSlice';
-import { UserContext } from '../../userContext/userContext';
+import { signIn, setLoginError, loginUser } from '../../redux/slices/usersSlice';
 
 function SignIn() {
   const {
@@ -20,25 +19,22 @@ function SignIn() {
     mode: 'onChange',
   });
 
-  const { loginUser } = useContext(UserContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [loginError, setLoginError] = useState('');
+  const loginError = useSelector((state) => state.users.loginError);
 
   const onSubmit = async (data) => {
     try {
-      const { token, username } = await dispatch(signIn(data)).unwrap();
+      const { token, username, email, image } = await dispatch(signIn(data)).unwrap();
+
       if (token) {
-        localStorage.setItem('jwtToken', token);
-        const mail = `${data.email}-image`;
-        const img = localStorage.getItem(mail);
-        loginUser({ ...data, username, token, image: img });
+        dispatch(loginUser({ username, email, image, token }));
         navigate('/');
       } else {
-        setLoginError('Invalid email or password');
+        dispatch(setLoginError('Invalid email or password'));
       }
     } catch (error) {
-      setLoginError('Invalid email or password');
+      dispatch(setLoginError('Invalid email or password'));
     }
   };
 
@@ -87,6 +83,7 @@ function SignIn() {
         <div className={classes.question}>
           Don’t have an account?
           <Link to="/sign-up" style={{ textDecoration: 'none', color: '#1890FF' }}>
+            {' '}
             Sign Up.
           </Link>
         </div>

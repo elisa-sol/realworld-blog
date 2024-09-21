@@ -6,17 +6,18 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { watchArticle, editArticle } from '../../redux/slices/articlesSlice';
+import { watchArticle, editArticle, setTagList, setSuccessMessage } from '../../redux/slices/articlesSlice';
 import classes from '../newArticle/newArticle.module.scss';
 
 function EditArticle() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { slug } = useParams();
-  const [tagList, setTagList] = useState([]);
-  const [successMessage, setSuccessMessage] = useState('');
-
-  const article = useSelector((state) => state.articles.article);
+  const { article, successMessage, tagList } = useSelector((state) => ({
+    article: state.articles.article,
+    successMessage: state.articles.successMessage,
+    tagList: state.articles.tagList,
+  }));
 
   const {
     register,
@@ -36,50 +37,60 @@ function EditArticle() {
       setValue('title', article.title);
       setValue('description', article.description);
       setValue('body', article.body);
-      setTagList(article.tagList || []);
+      dispatch(setTagList(article.tagList || []));
     }
   }, [article, setValue]);
 
+  let timeoutId;
+
   const onSubmit = async (data) => {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) {
+      navigate('/sign-in');
+      return;
+    }
+
     try {
       const articleData = {
         ...data,
         tagList: tagList.filter((tag) => tag.trim() !== ''),
       };
 
-      const token = localStorage.getItem('jwtToken');
-
       await dispatch(editArticle({ articleData, slug, token })).unwrap();
 
-      if (!token) {
-        navigate('/sign-in');
-      } else {
-        setSuccessMessage('Статья успешно отредактирована');
-        setTimeout(() => {
-          navigate('/');
-          setSuccessMessage(null);
-        }, 1000);
-      }
+      dispatch(setSuccessMessage('Статья успешно отредактирована'));
+      setTimeout(() => {
+        navigate('/');
+        dispatch(setSuccessMessage(null));
+      }, 1000);
     } catch (error) {
       console.log('Ошибка редактирования статьи');
     }
   };
 
+  useEffect(() => {
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [timeoutId]);
+
   const handleTagChange = (value, index) => {
     const updatedTagList = [...tagList];
     updatedTagList[index] = value;
-    setTagList(updatedTagList);
+    dispatch(setTagList(updatedTagList));
   };
 
   const handleClickAddTag = () => {
-    if (tagList.length === 0 || tagList[tagList.length - 1].trim() !== '') {
-      setTagList([...tagList, '']);
+    if (!tagList || tagList.length === 0 || tagList[tagList.length - 1].trim() !== '') {
+      dispatch(setTagList([...(tagList || []), '']));
     }
   };
 
   const handleClickDeleteTag = (index) => {
     if (tagList[index].trim() !== '' && index !== 0) {
-      setTagList(tagList.filter((_, i) => i !== index));
+      dispatch(setTagList(tagList.filter((_, i) => i !== index)));
     }
   };
 
@@ -125,7 +136,7 @@ function EditArticle() {
         </div>
         <div className={classes.tags}>Tags</div>
 
-        {tagList.length === 0 ? (
+        {Array.isArray(tagList) && tagList.length === 0 ? (
           <div className={classes['mini-container']}>
             <input
               className={classes.tag}
@@ -139,6 +150,7 @@ function EditArticle() {
             </button>
           </div>
         ) : (
+          Array.isArray(tagList) &&
           tagList.map((tag, index) => (
             <div key={index} className={classes['mini-container']}>
               <input

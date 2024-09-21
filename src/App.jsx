@@ -11,23 +11,20 @@ import Header from './components/header/header';
 import NewArticle from './components/newArticle/newArticle';
 import SignIn from './components/signIn/signIn';
 import SignUp from './components/signUp/signUp';
-import { UserProvider } from './userContext/userContext';
 
 function App() {
   return (
     <div className={classes.app}>
-      <UserProvider>
-        <Header />
-        <Routes>
-          <Route path="/" element={<ArticlesList />} />
-          <Route path="/article/:slug" element={<ArticleAlone />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/profile" element={<EditProfile />} />
-          <Route path="/new-article" element={<NewArticle />} />
-          <Route path="/articles/:slug/edit" element={<EditArticle />} />
-        </Routes>
-      </UserProvider>
+      <Header />
+      <Routes>
+        <Route path="/" element={<ArticlesList />} />
+        <Route path="/article/:slug" element={<ArticleAlone />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/profile" element={<EditProfile />} />
+        <Route path="/new-article" element={<NewArticle />} />
+        <Route path="/articles/:slug/edit" element={<EditArticle />} />
+      </Routes>
     </div>
   );
 }

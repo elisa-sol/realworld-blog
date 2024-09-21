@@ -1,49 +1,55 @@
-import React, { useEffect, useState } from 'react';
+// компонент когда мы видим все статьи списком на странице,
+// но это не сам список, а как статья отображается у нас
+// (например, чтобы текста было не очень много, чтобы все
+// статьи поместились на странице)
+
+import React, { useEffect } from 'react';
 
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
 import classes from './articleItem.module.scss';
-import { likedArticle } from '../../redux/slices/articlesSlice';
+import { likedArticle, setIsLiked, setLikesCount, updateLikedArticles } from '../../redux/slices/articlesSlice';
 
 function ArticleItem({ article }) {
-  const token = localStorage.getItem('jwtToken');
-  const user = localStorage.getItem('user');
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(article.favoritesCount);
+  const token = useSelector((state) => state.users.token);
+  const user = useSelector((state) => state.users.user);
+  const likedArticles = useSelector((state) => state.articles.likedArticles);
+  const { isLiked, likesCount } = useSelector((state) => ({
+    isLiked: state.articles.isLiked[article.slug] || false,
+    likesCount: state.articles.likesCount[article.slug] || article.favoritesCount,
+  }));
 
   useEffect(() => {
-    const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '[]');
-    setIsLiked(likedArticles.includes(article.slug));
-  }, [article.slug]);
+    dispatch(setIsLiked({ slug: article.slug, isLiked: likedArticles.includes(article.slug) }));
+  }, [article.slug, likedArticles, dispatch]);
 
   const handleLike = async () => {
     if (!token || !user) {
       navigate('/sign-in');
+      return;
     }
 
     try {
-      const action = isLiked ? 'unlike' : 'like';
-      await dispatch(likedArticle(article.slug, token, action));
+      await dispatch(likedArticle(article.slug));
 
       const newLikesCount = isLiked ? likesCount - 1 : likesCount + 1;
-      setLikesCount(newLikesCount);
-      setIsLiked(!isLiked);
+      dispatch(setLikesCount({ slug: article.slug, count: newLikesCount }));
+      dispatch(setIsLiked({ slug: article.slug, isLiked: !isLiked }));
 
-      const likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '[]');
+      let updatedLikedArticles;
       if (isLiked) {
-        const updatedLikes = likedArticles.filter((slug) => slug !== article.slug);
-        localStorage.setItem('likedArticles', JSON.stringify(updatedLikes));
+        updatedLikedArticles = likedArticles.filter((slug) => slug !== article.slug);
       } else {
-        likedArticles.push(article.slug);
-        localStorage.setItem('likedArticles', JSON.stringify(likedArticles));
+        updatedLikedArticles = [...likedArticles, article.slug];
       }
+      dispatch(updateLikedArticles(updatedLikedArticles));
     } catch (error) {
       console.log('Ошибка при изменении лайка');
     }
@@ -71,9 +77,7 @@ function ArticleItem({ article }) {
             ) : (
               <HeartOutlined onClick={handleLike} className={classes.heart} style={{ fontSize: '18px' }} />
             )}
-            <div className={classes.likes} onClick={handleLike}>
-              {likesCount}
-            </div>
+            <div className={classes.likes}>{likesCount}</div>
           </div>
         </div>
 

@@ -3,16 +3,16 @@ import React, { useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import classes from './newArticle.module.scss';
-import { addArticle } from '../../redux/slices/articlesSlice';
+import { addArticle, setTagList } from '../../redux/slices/articlesSlice';
 
 function NewArticle({ article }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [tagList, setTagList] = useState(article?.tagList || ['']);
+  const tagList = useSelector((state) => state.articles.tagList || []);
 
   const {
     register,
@@ -45,18 +45,18 @@ function NewArticle({ article }) {
   const handleTagChange = (value, index) => {
     const updatedTagList = [...tagList];
     updatedTagList[index] = value;
-    setTagList(updatedTagList);
+    dispatch(setTagList(updatedTagList));
   };
 
   const handleClickAddTag = () => {
-    if (tagList[tagList.length - 1].trim() !== '') {
-      setTagList([...tagList, '']);
+    if (tagList.length === 0 || tagList[tagList.length - 1].trim() !== '') {
+      dispatch(setTagList([...tagList, '']));
     }
   };
 
   const handleClickDeleteTag = (index) => {
     if (tagList[index].trim() !== '' && index !== 0) {
-      setTagList(tagList.filter((_, i) => i !== index));
+      dispatch(setTagList(tagList.filter((_, i) => i !== index)));
     }
   };
 
@@ -102,20 +102,36 @@ function NewArticle({ article }) {
         </div>
         <div className={classes.tags}>Tags</div>
 
-        {tagList.map((tag, index) => (
-          <div key={index} className={classes['mini-container']}>
+        {Array.isArray(tagList) && tagList.length === 0 ? (
+          <div className={classes['mini-container']}>
             <input
               className={classes.tag}
               placeholder="Tag"
               type="text"
-              value={tag}
-              onChange={(e) => handleTagChange(e.target.value, index)}
+              value=""
+              onChange={(e) => handleTagChange(e.target.value, 0)}
             />
-            <button type="button" className={classes.delete} onClick={() => handleClickDeleteTag(index)}>
+            <button type="button" className={classes.delete} onClick={() => handleClickDeleteTag(0)}>
               Delete
             </button>
           </div>
-        ))}
+        ) : (
+          Array.isArray(tagList) &&
+          tagList.map((tag, index) => (
+            <div key={index} className={classes['mini-container']}>
+              <input
+                className={classes.tag}
+                placeholder="Tag"
+                type="text"
+                value={tag}
+                onChange={(e) => handleTagChange(e.target.value, index)}
+              />
+              <button type="button" className={classes.delete} onClick={() => handleClickDeleteTag(index)}>
+                Delete
+              </button>
+            </div>
+          ))
+        )}
 
         <button type="button" className={classes['add-tag']} onClick={handleClickAddTag}>
           Add tag

@@ -1,15 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import isEmail from 'validator/lib/isEmail';
 
 import classes from './signUp.module.scss';
-import { signUp } from '../../redux/slices/usersSlice';
-import { UserContext } from '../../userContext/userContext';
+import { signUp, setLoginError, loginUser } from '../../redux/slices/usersSlice';
 
 function SignUp() {
   const {
@@ -21,30 +20,29 @@ function SignUp() {
     mode: 'onChange',
   });
 
-  const { loginUser } = useContext(UserContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [loginError, setLoginError] = useState('');
+  const loginError = useSelector((state) => state.users.loginError);
 
   const onSubmit = async (data) => {
     try {
-      const token = await dispatch(signUp(data));
+      const { token, username, email, image } = await dispatch(signUp(data)).unwrap();
 
       if (token) {
-        localStorage.setItem('jwtToken', token);
-        loginUser(data);
+        dispatch(loginUser({ username, email, image, token }));
         navigate('/');
       }
     } catch (error) {
       console.log('Ошибка регистрации:', error.message);
+      dispatch(setLoginError('Registration failed'));
 
-      if (error.email) {
-        setLoginError('Email is already taken.');
+      /* if (error.email) {
+        dispatch(setLoginError('Email is already taken.'));
       } else if (error.username) {
-        setLoginError('Username is already taken.');
+        dispatch(setLoginError('Username is already taken.'));
       } else {
-        setLoginError('Username or email is already taken.');
-      }
+        dispatch(setLoginError('Username or email is already taken.'));
+      } */
     }
   };
 
@@ -148,7 +146,6 @@ function SignUp() {
           Create
         </button>
         <div className={classes.question}>
-          {' '}
           Already have an account?{' '}
           <Link className={classes.in} to="/sign-in" style={{ textDecoration: 'none', color: '#1890FF' }}>
             Sign In.{' '}

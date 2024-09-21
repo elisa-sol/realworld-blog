@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchArticles } from './articlesSlice.js';
 
 const URL = 'https://blog.kata.academy/api/';
 
@@ -49,7 +48,13 @@ export const signIn = createAsyncThunk('users/signIn', async (userData, thunkAPI
   }
 });
 
-export const editProfile = createAsyncThunk('users/editProfile', async (userData, token, thunkAPI) => {
+export const editProfile = createAsyncThunk('users/editProfile', async (userData, thunkAPI) => {
+  const token = thunkAPI.getState().users.token;
+
+  if (!token) {
+    return thunkAPI.rejectWithValue('Токен не найден');
+  }
+
   try {
     const response = await fetch(`${URL}user`, {
       method: 'PUT',
@@ -61,43 +66,70 @@ export const editProfile = createAsyncThunk('users/editProfile', async (userData
     });
 
     if (!response.ok) {
-      return thunkAPI.rejectWithValue('Ошибка редактирования1');
+      return thunkAPI.rejectWithValue('Ошибка редактирования профиля');
     }
 
     const json = await response.json();
-    const { token: responseToken, image } = json.user;
+    const { token: newToken, image } = json.user;
 
-    localStorage.setItem('jwtToken', json.user.token);
+    localStorage.setItem('jwtToken', newToken);
 
-    return { token: responseToken, image };
+    return { token: newToken, image };
   } catch (error) {
-    return thunkAPI.rejectWithValue('Ошибка редактировани2я');
+    return thunkAPI.rejectWithValue('Ошибка при редактировании профиля');
   }
 });
 
 const usersSlice = createSlice({
   name: 'users',
   initialState: {
-    user: null,
-    token: null,
+    user: JSON.parse(localStorage.getItem('user')) || null,
+    token: localStorage.getItem('jwtToken') || null,
     error: null,
     isLoading: false,
+    loginError: '',
+    successMessage: '',
   },
-  reducers: {},
+  reducers: {
+    setLoginError: (state, action) => {
+      state.loginError = action.payload;
+    },
+    setSuccessMessage: (state, action) => {
+      state.successMessage = action.payload;
+    },
+    loginUser: (state, action) => {
+      const userToSave = {
+        ...action.payload,
+        isLoggedIn: true,
+        image: action.payload.image || 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      };
+      state.user = userToSave;
+      localStorage.setItem('user', JSON.stringify(userToSave));
+    },
+    logoutUser: (state) => {
+      state.user = null;
+      state.token = null;
+      localStorage.removeItem('user');
+      localStorage.removeItem('jwtToken');
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(signUp.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(signUp.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = {
+        const userToSave = {
           username: action.payload.username,
           email: action.payload.email,
-          image: action.payload.image,
+          image: action.payload.image || 'https://static.productionready.io/images/smiley-cyrus.jpg',
         };
-        state.token = action.payload.token || state.token;
+        state.user = userToSave;
+        state.token = action.payload.token;
+        state.isLoading = false;
         state.error = null;
+        localStorage.setItem('jwtToken', action.payload.token); // Сохранение токена в localStorage
+        localStorage.setItem('user', JSON.stringify(userToSave)); // Сохранение пользователя в localStorage
       })
       .addCase(signUp.rejected, (state, action) => {
         state.error = action.payload;
@@ -108,10 +140,17 @@ const usersSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(signIn.fulfilled, (state, action) => {
+        const userToSave = {
+          username: action.payload.username,
+          email: action.payload.email,
+          image: action.payload.image || 'https://static.productionready.io/images/smiley-cyrus.jpg',
+        };
+        state.user = userToSave;
+        state.token = action.payload.token;
         state.isLoading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token || state.token;
         state.error = null;
+        localStorage.setItem('jwtToken', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(userToSave));
       })
       .addCase(signIn.rejected, (state, action) => {
         state.error = action.payload;
@@ -134,4 +173,5 @@ const usersSlice = createSlice({
   },
 });
 
+export const { setLoginError, setSuccessMessage, loginUser, logoutUser } = usersSlice.actions;
 export default usersSlice.reducer;

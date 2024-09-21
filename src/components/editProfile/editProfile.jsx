@@ -1,16 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import isURL from 'validator/es/lib/isURL';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import isEmail from 'validator/lib/isEmail';
 
 import classes from './editProfile.module.scss';
-import { editProfile } from '../../redux/slices/usersSlice';
-import { UserContext } from '../../userContext/userContext';
+import { editProfile, loginUser, setLoginError, setSuccessMessage } from '../../redux/slices/usersSlice';
 import Loader from '../loader/loader';
 
 function EditProfile() {
@@ -23,40 +22,38 @@ function EditProfile() {
     mode: 'onChange',
   });
 
-  const { user, loginUser } = useContext(UserContext);
   const dispatch = useDispatch();
-  const [loginError, setLoginError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const { user, token, loginError, successMessage } = useSelector((state) => ({
+    token: state.users.token,
+    user: state.users.user,
+    successMessage: state.users.successMessage,
+    loginError: state.users.loginError,
+  }));
 
   const onSubmit = async (data) => {
     try {
-      const token = localStorage.getItem('jwtToken');
       if (!token) {
-        setLoginError('Token not found. Please log in again.');
+        dispatch(setLoginError('Token not found. Please log in again.'));
         return;
       }
-      const resultToken = await dispatch(editProfile(data, token));
-      if (resultToken) {
-        localStorage.setItem('jwtToken', resultToken);
 
-        const mail = `${data.email}-image`;
-        localStorage.setItem(mail, data.image || user.image);
-
+      const result = await dispatch(editProfile(data, token)).unwrap();
+      if (result) {
         const updatedUser = { ...user, ...data, image: data.image || user.image };
-        loginUser(updatedUser);
-        setSuccessMessage('Profile updated successfully');
-        setLoginError('');
+        dispatch(loginUser(updatedUser));
+
+        dispatch(setSuccessMessage('Profile updated successfully'));
+        dispatch(setLoginError(''));
       } else {
-        setLoginError('Error updating profile. Invalid token.');
-        setSuccessMessage('');
+        dispatch(setLoginError('Error updating profile. Invalid token.'));
       }
     } catch (error) {
       if (error.message === 'jwt malformed') {
-        setLoginError('Invalid token. Please log in again.');
+        dispatch(setLoginError('Invalid token. Please log in again.'));
       } else {
-        setLoginError('Error updating profile');
+        dispatch(setLoginError('Error updating profile'));
       }
-      setSuccessMessage('');
+      dispatch(setSuccessMessage(''));
     }
   };
 

@@ -1,14 +1,20 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 import { Link } from 'react-router-dom';
 
 import classes from './header.module.scss';
-import { UserContext } from '../../userContext/userContext';
+import { logoutUser } from '../../redux/slices/usersSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function Header() {
-  const { user, logoutUser } = useContext(UserContext);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.users.user);
 
   const defaultAvatar = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
 
   return (
     <div className={classes.header}>
@@ -27,7 +33,7 @@ function Header() {
             <Link className={classes.avatar} to="/profile" style={{ textDecoration: 'none', color: 'black' }}>
               <img src={user.image || defaultAvatar} alt="User Avatar" className={classes.image} />
             </Link>
-            <button className={classes.logout} type="button" onClick={logoutUser}>
+            <button className={classes.logout} type="button" onClick={handleLogout}>
               Log Out
             </button>
           </div>
