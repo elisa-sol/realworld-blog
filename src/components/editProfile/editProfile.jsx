@@ -163,6 +163,7 @@ import classes from './editProfile.module.scss';
 import { useEditProfileMutation } from '../../redux/rtk/usersApi.js';
 import { updateProfileField, loginUser, setLoginError, setSuccessMessage } from '../../redux/slices/usersSlice';
 import Loader from '../loader/loader';
+import { useNavigate } from 'react-router-dom';
 
 function EditProfile() {
   const {

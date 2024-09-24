@@ -187,11 +187,12 @@ function SignUp() {
     try {
       const { token, username, email, image } = await signUp(data).unwrap();
 
-      if (token) {
-        dispatch(loginUser({ username, email, image, token }));
-      }
+      // if (token) {
+      //   dispatch(loginUser({ username, email, image, token }));
+      // }
 
       navigate('/');
+      dispatch(loginUser({ token, username, email, image }));
     } catch (err) {
       console.log('Ошибка регистрации:', error.message);
       dispatch(setLoginError('Registration failed'));

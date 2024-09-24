@@ -97,7 +97,7 @@
 import React from 'react';
 
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import isEmail from 'validator/lib/isEmail';
 
@@ -123,12 +123,14 @@ function SignIn() {
     try {
       const { token, username, email, image } = await signIn(data).unwrap();
 
-      if (token) {
-        dispatch(loginUser({ username, email, image, token }));
-      }
+      // if (token) {
+      //   dispatch(loginUser({ username, email, image, token }));
+      // }
 
       navigate('/');
-      // } catch (err) {
+      return { username, email, image, token };
+
+      // dispatch(loginUser({ username, email, image, token }));
     } catch (err) {
       dispatch(setLoginError('Invalid email or password'));
     }

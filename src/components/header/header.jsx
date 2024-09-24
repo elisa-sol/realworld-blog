@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import classes from './header.module.scss';
 import { logoutUser } from '../../redux/slices/usersSlice';
@@ -8,12 +8,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 function Header() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector((state) => state.users.user);
 
   const defaultAvatar = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    navigate('/');
   };
 
   return (

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
 
 const usersSlice = createSlice({
   name: 'users',
@@ -21,12 +22,6 @@ const usersSlice = createSlice({
     setSuccessMessage: (state, action) => {
       state.successMessage = action.payload;
     },
-    logoutUser: (state) => {
-      state.user = null;
-      state.token = null;
-      // localStorage.removeItem('user');
-      localStorage.removeItem('jwtToken');
-    },
     loginUser: (state, action) => {
       const userToSave = {
         ...action.payload,
@@ -36,8 +31,14 @@ const usersSlice = createSlice({
       const { token } = action.payload;
       state.token = token;
       state.user = userToSave;
-      localStorage.setItem('jwtToken', token);
-      // localStorage.setItem('user', JSON.stringify(userToSave));
+      // localStorage.setItem('jwtToken', token);
+      localStorage.setItem('user', JSON.stringify(userToSave));
+    },
+    logoutUser: (state) => {
+      state.user = null;
+      state.token = null;
+      localStorage.removeItem('user');
+      // localStorage.removeItem('jwtToken');
     },
     updateProfileField: (state, action) => {
       const { field, value } = action.payload;

@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { loginUser } from '../slices/usersSlice.js';
+
+import { loginUser } from '../slices/usersSlice';
 
 const URL = 'https://blog.kata.academy/api/';
 
@@ -44,16 +45,16 @@ export const userApi = createApi({
         method: 'POST',
         body: { user: userData },
       }),
-      // async onQueryStarted(userData, { dispatch, queryFulfilled }) {
-      //   try {
-      //     const { data } = await queryFulfilled;
-      //     const { token, username, email, image } = data.user;
-      //
-      //     dispatch(loginUser({ token, username, email, image }));
-      //   } catch (error) {
-      //     console.error('Ошибка авторизации:', error);
-      //   }
-      // },
+      async onQueryStarted(userData, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const { token, username, email, image } = data.user;
+
+          dispatch(loginUser({ token, username, email, image }));
+        } catch (error) {
+          console.error('Ошибка авторизации:', error);
+        }
+      },
     }),
     // Редактирование профиля
     editProfile: builder.mutation({
@@ -74,16 +75,16 @@ export const userApi = createApi({
           body: { user: updatedUserData },
         };
       },
-      // async onQueryStarted(userData, { dispatch, queryFulfilled }) {
-      //   try {
-      //     const { data } = await queryFulfilled;
-      //     const { token, username, email, image } = data.user;
-      //
-      //     dispatch(loginUser({ token, username, email, image }));
-      //   } catch (error) {
-      //     console.error('Ошибка редактирования профиля:', error);
-      //   }
-      // },
+      async onQueryStarted(userData, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const { token, username, email, image } = data.user;
+
+          dispatch(loginUser({ token, username, email, image }));
+        } catch (error) {
+          console.error('Ошибка редактирования профиля:', error);
+        }
+      },
     }),
   }),
 });
