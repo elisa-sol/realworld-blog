@@ -1,10 +1,10 @@
 import React from 'react';
 
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
 import classes from './header.module.scss';
 import { logoutUser } from '../../redux/slices/usersSlice';
-import { useDispatch, useSelector } from 'react-redux';
 
 function Header() {
   const dispatch = useDispatch();

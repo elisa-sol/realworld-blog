@@ -9,7 +9,7 @@ export const userApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: URL,
     prepareHeaders: (headers, { getState }) => {
-      const token = getState().users.token;
+      const { token } = getState().users;
 
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
@@ -19,23 +19,23 @@ export const userApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    //Регистрация пользователя
+    // Регистрация пользователя
     signUp: builder.mutation({
       query: (userData) => ({
         url: 'users',
         method: 'POST',
         body: { user: userData },
       }),
-      // async onQueryStarted(userData, { dispatch, queryFulfilled }) {
-      //   try {
-      //     const { data } = await queryFulfilled;
-      //     const { token, username, email, image } = data.user;
-      //
-      //     dispatch(loginUser({ token, username, email, image }));
-      //   } catch (error) {
-      //     console.error('Ошибка регистрации:', error);
-      //   }
-      // },
+      async onQueryStarted(userData, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const { token, username, email, image } = data.user;
+
+          dispatch(loginUser({ token, username, email, image }));
+        } catch (error) {
+          console.error('Ошибка регистрации:', error);
+        }
+      },
     }),
 
     // Вход пользователя

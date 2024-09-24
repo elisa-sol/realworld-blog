@@ -104,7 +104,7 @@ export const deleteArticle = createAsyncThunk('articles/deleteArticle', async (s
 
 export const likedArticle = createAsyncThunk('articles/likedArticle', async (slug, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().users.token;
+    const { token } = thunkAPI.getState().users;
 
     if (!token) {
       return thunkAPI.rejectWithValue('Токен не найден');

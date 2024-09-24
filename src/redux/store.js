@@ -1,20 +1,8 @@
-// import { configureStore } from '@reduxjs/toolkit';
-//
-// import articlesReducer from './slices/articlesSlice';
-// import usersReducer from './slices/usersSlice';
-//
-// const store = configureStore({
-//   reducer: {
-//     articles: articlesReducer,
-//     users: usersReducer,
-//   },
-// });
-//
-// export default store;
 import { configureStore } from '@reduxjs/toolkit';
-import { userApi } from './rtk/usersApi.js';
-import usersReducer from './slices/usersSlice.js';
-import articlesReducer from './slices/articlesSlice.js';
+
+import { userApi } from './rtk/usersApi';
+import articlesReducer from './slices/articlesSlice';
+import usersReducer from './slices/usersSlice';
 
 export const store = configureStore({
   reducer: {
@@ -26,13 +14,3 @@ export const store = configureStore({
 });
 
 export default store;
-
-// import { configureStore } from '@reduxjs/toolkit';
-// import { userApi } from './rtk/usersApi.js';
-//
-// const store = configureStore({
-//   reducer: {
-//     [userApi.reducerPath]: userApi.reducer,
-//   },
-//   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware), // Добавляем middleware RTK Query
-// });

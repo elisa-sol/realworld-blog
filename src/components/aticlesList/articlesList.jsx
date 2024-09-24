@@ -25,14 +25,8 @@ function ArticlesList() {
   return (
     <div className={classes.container}>
       <ul>
-        {Array.isArray(articles) &&
-          //
-          articles.map((article) => (
-            //
-            <ArticleItem key={article.slug} article={article} />
-          ))}
+        {Array.isArray(articles) && articles.map((article) => <ArticleItem key={article.slug} article={article} />)}
       </ul>
-      {/* {totalPages > 0 && ( */}
       <Pagination
         onChange={handlePageChange}
         current={currentPage}
@@ -41,7 +35,6 @@ function ArticlesList() {
         showSizeChanger={false}
         style={{ display: 'flex', justifyContent: 'center', margin: '20px' }}
       />
-      {/* )} */}
     </div>
   );
 }
