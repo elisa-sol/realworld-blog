@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import classes from './newArticle.module.scss';
-import { addArticle, setTagList } from '../../redux/slices/articlesSlice';
+import { useAddArticleMutation } from '../../redux/rtk/articlesApi';
+import { setTagList } from '../../redux/slices/articlesSlice';
+import Loader from '../loader/loader';
 
-function NewArticle({ article }) {
+function NewArticle() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const tagList = useSelector((state) => state.articles.tagList || []);
+  const token = useSelector((state) => state.users.token);
+  const [addArticle, { isLoading, error }] = useAddArticleMutation();
 
   const {
     register,
@@ -25,19 +28,20 @@ function NewArticle({ article }) {
   const onSubmit = async (data) => {
     try {
       const articleData = {
-        ...data,
+        title: data.title || '',
+        description: data.description || '',
+        body: data.body || '',
         tagList: tagList.filter((tag) => tag.trim() !== ''),
       };
 
-      const token = localStorage.getItem('jwtToken');
-      await dispatch(addArticle({ articleData, token }));
+      await addArticle(articleData);
 
       if (!token) {
         navigate('/sign-in');
       } else {
         navigate('/');
       }
-    } catch (error) {
+    } catch (err) {
       console.log('Ошибка добавления статьи');
     }
   };
@@ -59,6 +63,9 @@ function NewArticle({ article }) {
       dispatch(setTagList(tagList.filter((_, i) => i !== index)));
     }
   };
+
+  if (isLoading) return <Loader />;
+  if (error) return <p>Ошибка создания статьи</p>;
 
   return (
     <div className={classes['new-article']}>

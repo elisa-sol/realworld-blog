@@ -2,12 +2,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { loginUser } from '../slices/usersSlice';
 
-const URL = 'https://blog.kata.academy/api/';
-
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: URL,
+    baseUrl: 'https://blog.kata.academy/api/',
     prepareHeaders: (headers, { getState }) => {
       const { token } = getState().users;
 

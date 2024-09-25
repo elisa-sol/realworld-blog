@@ -34,6 +34,7 @@ function SignIn() {
       return { username, email, image, token };
     } catch (err) {
       dispatch(setLoginError('Invalid email or password'));
+      return { error: err };
     }
   };
 

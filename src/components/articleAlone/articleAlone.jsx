@@ -1,6 +1,4 @@
-// компонент когда мы нажимаем на статью и видим кнопки эдита и удаления
-
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 import { Alert, Popconfirm } from 'antd';
@@ -10,15 +8,8 @@ import Markdown from 'react-markdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import {
-  deleteArticle,
-  likedArticle,
-  setIsLiked,
-  setLikesCount,
-  setSuccessMessage,
-  updateLikedArticles,
-  watchArticle,
-} from '../../redux/slices/articlesSlice';
+import { useWatchArticleQuery, useDeleteArticleMutation, useLikedArticleMutation } from '../../redux/rtk/articlesApi';
+import { setIsLiked, setLikesCount, setSuccessMessage, updateLikedArticles } from '../../redux/slices/articlesSlice';
 import classes from '../articleItem/articleItem.module.scss';
 import Loader from '../loader/loader';
 
@@ -26,7 +17,7 @@ function ArticleAlone() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { slug } = useParams();
-  const { article, currentUser, isLiked, likesCount, successMessage, likedArticles } = useSelector((state) => ({
+  const { isLiked, likesCount, successMessage, likedArticles } = useSelector((state) => ({
     article: state.articles.article,
     currentUser: state.articles.article.author ? state.articles.article.author.username : null,
     isLiked: state.articles.isLiked[slug] || false,
@@ -36,26 +27,26 @@ function ArticleAlone() {
   }));
   const token = useSelector((state) => state.users.token);
   const localUser = useSelector((state) => state.users.user);
-
-  useEffect(() => {
-    if (slug) {
-      dispatch(watchArticle(slug));
-    }
-  }, [dispatch, slug]);
+  const { data: article, error, isLoading } = useWatchArticleQuery(slug);
+  const [deleteArticle] = useDeleteArticleMutation();
+  const [likedArticle] = useLikedArticleMutation();
 
   useEffect(() => {
     if (article && article.slug) {
       const liked = likedArticles.includes(article.slug);
       dispatch(setIsLiked({ slug: article.slug, isLiked: liked }));
     }
-  }, [article.slug, likedArticles, dispatch]);
+  }, [article, likedArticles, dispatch]);
 
-  const isOwner = useMemo(() => {
-    return localUser && currentUser && article.author && article.author.username === localUser.username;
-  }, [localUser, currentUser, article.author]);
+  const isOwner = () => {
+    if (!localUser || !article.author) {
+      return false;
+    }
+    return localUser.username === article.author.username;
+  };
 
-  const confirm = useCallback(() => {
-    dispatch(deleteArticle(slug));
+  const confirm = useCallback(async () => {
+    await deleteArticle(slug);
     dispatch(setSuccessMessage('Статья успешно удалена'));
     setTimeout(() => {
       navigate('/');
@@ -74,7 +65,8 @@ function ArticleAlone() {
     }
 
     try {
-      await dispatch(likedArticle(slug));
+      // await likedArticle(slug);
+      await likedArticle({ slug, isLiked }).unwrap();
 
       const newLikesCount = !isLiked ? likesCount + 1 : likesCount - 1;
 
@@ -84,18 +76,18 @@ function ArticleAlone() {
       let updatedLikedArticles = likedArticles;
       if (isLiked) {
         updatedLikedArticles = likedArticles.filter((likedSlug) => likedSlug !== slug);
-      } else {
-        if (!likedArticles.includes(slug)) {
-          updatedLikedArticles = [...likedArticles, slug];
-        }
+      } else if (!likedArticles.includes(slug)) {
+        updatedLikedArticles = [...likedArticles, slug];
       }
 
       dispatch(updateLikedArticles(updatedLikedArticles));
-    } catch (error) {
+    } catch (err) {
       console.log('Ошибка при изменении лайка');
     }
   }, [isLiked, dispatch, slug, token, likesCount, likedArticles, navigate]);
 
+  if (isLoading) return <Loader />;
+  if (error) return <p>Ошибка загрузки статьи</p>;
   if (!article || !article.author) return <Loader />;
 
   return (
@@ -152,7 +144,7 @@ function ArticleAlone() {
       </div>
       <Markdown className={classes.markdown} children={String(article.body)} />
 
-      {isOwner && (
+      {isOwner() && (
         <div className={classes['button-container']}>
           <Popconfirm
             title="Delete the task"

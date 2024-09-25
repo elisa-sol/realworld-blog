@@ -1,36 +1,37 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Pagination } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import classes from './articlesList.module.scss';
-import { fetchArticles } from '../../redux/slices/articlesSlice';
+import { useFetchArticlesQuery } from '../../redux/rtk/articlesApi';
+import { setCurrentPage } from '../../redux/slices/articlesSlice';
 import ArticleItem from '../articleItem/articleItem';
 import Loader from '../loader/loader';
 
 function ArticlesList() {
   const dispatch = useDispatch();
-  const { articles, totalPages, currentPage, isLoading } = useSelector((state) => state.articles);
-
-  useEffect(() => {
-    dispatch(fetchArticles({ page: currentPage }));
-  }, [dispatch, currentPage]);
+  const { currentPage } = useSelector((state) => state.articles);
+  const { data, error, isLoading } = useFetchArticlesQuery({ page: currentPage });
 
   const handlePageChange = (page) => {
-    dispatch(fetchArticles({ page }));
+    dispatch(setCurrentPage({ page }));
   };
 
   if (isLoading) return <Loader />;
 
+  if (error) return <p>Ошибка загрузки статей</p>;
+
   return (
     <div className={classes.container}>
       <ul>
-        {Array.isArray(articles) && articles.map((article) => <ArticleItem key={article.slug} article={article} />)}
+        {Array.isArray(data.articles) &&
+          data.articles.map((article) => <ArticleItem key={article.slug} article={article} />)}
       </ul>
       <Pagination
         onChange={handlePageChange}
         current={currentPage}
-        total={totalPages * 20}
+        total={data.totalPages * 20}
         pageSize={20}
         showSizeChanger={false}
         style={{ display: 'flex', justifyContent: 'center', margin: '20px' }}

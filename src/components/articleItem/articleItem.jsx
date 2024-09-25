@@ -13,7 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
 import classes from './articleItem.module.scss';
-import { likedArticle, setIsLiked, setLikesCount, updateLikedArticles } from '../../redux/slices/articlesSlice';
+import { useLikedArticleMutation } from '../../redux/rtk/articlesApi';
+import { setIsLiked, setLikesCount, updateLikedArticles } from '../../redux/slices/articlesSlice';
 
 function ArticleItem({ article }) {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ function ArticleItem({ article }) {
     isLiked: state.articles.isLiked[article.slug] || false,
     likesCount: state.articles.likesCount[article.slug] || article.favoritesCount,
   }));
+  const [likedArticle] = useLikedArticleMutation();
 
   useEffect(() => {
     dispatch(setIsLiked({ slug: article.slug, isLiked: likedArticles.includes(article.slug) }));
@@ -37,7 +39,7 @@ function ArticleItem({ article }) {
     }
 
     try {
-      await dispatch(likedArticle(article.slug));
+      await likedArticle({ slug: article.slug, isLiked }).unwrap;
 
       const newLikesCount = isLiked ? likesCount - 1 : likesCount + 1;
       dispatch(setLikesCount({ slug: article.slug, count: newLikesCount }));

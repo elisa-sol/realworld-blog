@@ -5,18 +5,22 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { watchArticle, editArticle, setTagList, setSuccessMessage } from '../../redux/slices/articlesSlice';
+import { useEditArticleMutation, useWatchArticleQuery } from '../../redux/rtk/articlesApi';
+import { setTagList, setSuccessMessage } from '../../redux/slices/articlesSlice';
+import Loader from '../loader/loader';
 import classes from '../newArticle/newArticle.module.scss';
 
 function EditArticle() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { slug } = useParams();
-  const { article, successMessage, tagList } = useSelector((state) => ({
+  const { successMessage, tagList } = useSelector((state) => ({
     article: state.articles.article,
     successMessage: state.articles.successMessage,
     tagList: state.articles.tagList,
   }));
+  const { data: article, isLoading, error } = useWatchArticleQuery(slug);
+  const [editArticle] = useEditArticleMutation();
 
   const {
     register,
@@ -26,10 +30,6 @@ function EditArticle() {
   } = useForm({
     mode: 'onChange',
   });
-
-  useEffect(() => {
-    dispatch(watchArticle(slug));
-  }, [dispatch, slug]);
 
   useEffect(() => {
     if (article) {
@@ -55,14 +55,14 @@ function EditArticle() {
         tagList: tagList.filter((tag) => tag.trim() !== ''),
       };
 
-      await dispatch(editArticle({ articleData, slug, token })).unwrap();
+      await editArticle({ articleData, slug });
 
       dispatch(setSuccessMessage('Статья успешно отредактирована'));
       setTimeout(() => {
         navigate('/');
         dispatch(setSuccessMessage(null));
       }, 1000);
-    } catch (error) {
+    } catch (err) {
       console.log('Ошибка редактирования статьи');
     }
   };
@@ -92,6 +92,9 @@ function EditArticle() {
       dispatch(setTagList(tagList.filter((_, i) => i !== index)));
     }
   };
+
+  if (isLoading) return <Loader />;
+  if (error) return <p>Ошибка загрузки статьи</p>;
 
   return (
     <div className={classes['new-article']}>
